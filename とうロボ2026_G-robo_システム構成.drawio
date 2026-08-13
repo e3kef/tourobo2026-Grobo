@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="ページ-1" id="iU3d9pDwjOwahh7N6tyW">
-    <mxGraphModel dx="1041" dy="703" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1874" dy="1266" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -22,26 +22,26 @@
         <mxCell id="7jAj8Ft8sd07R3d0lVXH-11" parent="7jAj8Ft8sd07R3d0lVXH-10" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="&lt;div&gt;&lt;ul&gt;&lt;li&gt;入力受信&lt;/li&gt;&lt;li&gt;S.BUS出力&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="30" width="200" y="30" as="geometry" />
         </mxCell>
-        <mxCell id="7jAj8Ft8sd07R3d0lVXH-14" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#e1d5e7;strokeColor=#9673a6;" value="xiao ESP32C3 555①" vertex="1">
-          <mxGeometry height="110" width="200" x="364" y="250" as="geometry" />
+        <mxCell id="7jAj8Ft8sd07R3d0lVXH-14" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#e1d5e7;strokeColor=#9673a6;" value="xiao ESP32C3 足回り①" vertex="1">
+          <mxGeometry height="110" width="200" x="364" y="185" as="geometry" />
         </mxCell>
         <mxCell id="7jAj8Ft8sd07R3d0lVXH-15" parent="7jAj8Ft8sd07R3d0lVXH-14" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="&lt;ul&gt;&lt;li&gt;CAN受信&lt;/li&gt;&lt;li&gt;エンコーダデータ取得&lt;/li&gt;&lt;li&gt;PID制御&lt;/li&gt;&lt;li&gt;PWM出力&lt;/li&gt;&lt;/ul&gt;" vertex="1">
           <mxGeometry height="30" width="200" y="50" as="geometry" />
         </mxCell>
-        <mxCell id="7jAj8Ft8sd07R3d0lVXH-20" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#e1d5e7;strokeColor=#9673a6;" value="xiao ESP32C3 555②" vertex="1">
-          <mxGeometry height="110" width="200" x="364" y="380" as="geometry" />
+        <mxCell id="7jAj8Ft8sd07R3d0lVXH-20" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#e1d5e7;strokeColor=#9673a6;" value="xiao ESP32C3 足回り②" vertex="1">
+          <mxGeometry height="110" width="200" x="364" y="315" as="geometry" />
         </mxCell>
         <mxCell id="7jAj8Ft8sd07R3d0lVXH-21" parent="7jAj8Ft8sd07R3d0lVXH-20" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="&lt;ul&gt;&lt;li&gt;CAN受信&lt;/li&gt;&lt;li&gt;エンコーダデータ取得&lt;/li&gt;&lt;li&gt;PID制御&lt;/li&gt;&lt;li&gt;PWM出力&lt;/li&gt;&lt;/ul&gt;" vertex="1">
           <mxGeometry height="30" width="200" y="50" as="geometry" />
         </mxCell>
-        <mxCell id="7jAj8Ft8sd07R3d0lVXH-22" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#e1d5e7;strokeColor=#9673a6;" value="xiao ESP32C3 555③" vertex="1">
-          <mxGeometry height="110" width="200" x="364" y="510" as="geometry" />
+        <mxCell id="7jAj8Ft8sd07R3d0lVXH-22" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#e1d5e7;strokeColor=#9673a6;" value="xiao ESP32C3 足回り③" vertex="1">
+          <mxGeometry height="110" width="200" x="364" y="445" as="geometry" />
         </mxCell>
         <mxCell id="7jAj8Ft8sd07R3d0lVXH-23" parent="7jAj8Ft8sd07R3d0lVXH-22" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="&lt;ul&gt;&lt;li&gt;CAN受信&lt;/li&gt;&lt;li&gt;エンコーダデータ取得&lt;/li&gt;&lt;li&gt;PID制御&lt;/li&gt;&lt;li&gt;PWM出力&lt;/li&gt;&lt;/ul&gt;" vertex="1">
           <mxGeometry height="30" width="200" y="50" as="geometry" />
         </mxCell>
-        <mxCell id="7jAj8Ft8sd07R3d0lVXH-26" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#e1d5e7;strokeColor=#9673a6;" value="xiao ESP32C3 555④" vertex="1">
-          <mxGeometry height="110" width="200" x="364" y="640" as="geometry" />
+        <mxCell id="7jAj8Ft8sd07R3d0lVXH-26" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#e1d5e7;strokeColor=#9673a6;" value="xiao ESP32C3 足回り④" vertex="1">
+          <mxGeometry height="110" width="200" x="364" y="575" as="geometry" />
         </mxCell>
         <mxCell id="7jAj8Ft8sd07R3d0lVXH-27" parent="7jAj8Ft8sd07R3d0lVXH-26" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="&lt;ul&gt;&lt;li&gt;CAN受信&lt;/li&gt;&lt;li&gt;エンコーダデータ取得&lt;/li&gt;&lt;li&gt;PID制御&lt;/li&gt;&lt;li&gt;PWM出力&lt;/li&gt;&lt;/ul&gt;" vertex="1">
           <mxGeometry height="30" width="200" y="50" as="geometry" />
@@ -52,11 +52,11 @@
         <mxCell id="7jAj8Ft8sd07R3d0lVXH-29" parent="7jAj8Ft8sd07R3d0lVXH-28" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="&lt;ul&gt;&lt;li&gt;S.BUSデータ取得&lt;/li&gt;&lt;li&gt;信号反転&lt;/li&gt;&lt;li&gt;各マイコンにCAN送信&lt;/li&gt;&lt;li&gt;通信エラー時の停止処理&lt;/li&gt;&lt;/ul&gt;" vertex="1">
           <mxGeometry height="30" width="200" y="50" as="geometry" />
         </mxCell>
-        <mxCell id="7jAj8Ft8sd07R3d0lVXH-30" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;div&gt;ESP32-Devkit②（機構制御）&lt;/div&gt;" vertex="1">
-          <mxGeometry height="160" width="200" x="364" y="780" as="geometry" />
+        <mxCell id="7jAj8Ft8sd07R3d0lVXH-30" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;div&gt;ESP32-Devkit②（取得/昇降）&lt;/div&gt;" vertex="1">
+          <mxGeometry height="134" width="200" x="364" y="965" as="geometry" />
         </mxCell>
-        <mxCell id="7jAj8Ft8sd07R3d0lVXH-31" parent="7jAj8Ft8sd07R3d0lVXH-30" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="&lt;ul&gt;&lt;li&gt;CAN受信&lt;/li&gt;&lt;li&gt;&lt;div align=&quot;left&quot;&gt;エンコーダデータ取得&lt;/div&gt;&lt;/li&gt;&lt;li&gt;ポテンショメータデータ取得&lt;/li&gt;&lt;li&gt;取得機構PWM出力&lt;/li&gt;&lt;li&gt;射出機構PWM出力&lt;/li&gt;&lt;li&gt;城門用昇降機構PWM出力&lt;/li&gt;&lt;li&gt;城門用開閉機構信号出力&lt;/li&gt;&lt;/ul&gt;" vertex="1">
-          <mxGeometry height="30" width="180" y="75" as="geometry" />
+        <mxCell id="7jAj8Ft8sd07R3d0lVXH-31" parent="7jAj8Ft8sd07R3d0lVXH-30" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="&lt;ul&gt;&lt;li&gt;CAN受信&lt;/li&gt;&lt;li&gt;ポテンショメータデータ取得&lt;/li&gt;&lt;li&gt;取得機構PWM出力&lt;/li&gt;&lt;li&gt;昇降機構PWM出力&lt;/li&gt;&lt;li&gt;開閉機構信号出力&lt;/li&gt;&lt;/ul&gt;" vertex="1">
+          <mxGeometry height="30" width="180" y="62" as="geometry" />
         </mxCell>
         <mxCell id="7jAj8Ft8sd07R3d0lVXH-34" edge="1" parent="1" source="7jAj8Ft8sd07R3d0lVXH-10" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="7jAj8Ft8sd07R3d0lVXH-28" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
@@ -85,53 +85,47 @@
         <mxCell id="7jAj8Ft8sd07R3d0lVXH-45" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=-0.005;entryY=0.322;entryDx=0;entryDy=0;entryPerimeter=0;" target="7jAj8Ft8sd07R3d0lVXH-15" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
             <Array as="points">
-              <mxPoint x="324" y="310" />
+              <mxPoint x="324" y="244.66" />
             </Array>
             <mxPoint x="324" y="570" as="sourcePoint" />
             <mxPoint x="614" y="470" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="7jAj8Ft8sd07R3d0lVXH-46" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="7jAj8Ft8sd07R3d0lVXH-31" value="">
+        <mxCell id="7jAj8Ft8sd07R3d0lVXH-46" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
             <Array as="points">
-              <mxPoint x="324" y="870" />
+              <mxPoint x="324" y="1035" />
             </Array>
-            <mxPoint x="324" y="570" as="sourcePoint" />
-            <mxPoint x="674" y="550" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="7jAj8Ft8sd07R3d0lVXH-47" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.333;entryDx=0;entryDy=0;entryPerimeter=0;" target="7jAj8Ft8sd07R3d0lVXH-23" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <mxPoint x="324" y="570" as="sourcePoint" />
-            <mxPoint x="444" y="640" as="targetPoint" />
+            <mxPoint x="324" y="560" as="sourcePoint" />
+            <mxPoint x="364" y="1035" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="7jAj8Ft8sd07R3d0lVXH-48" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=-0.001;entryY=0.338;entryDx=0;entryDy=0;entryPerimeter=0;" target="7jAj8Ft8sd07R3d0lVXH-21" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <mxPoint x="324" y="440" as="sourcePoint" />
+            <mxPoint x="324" y="375.14" as="sourcePoint" />
             <mxPoint x="394" y="490" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="7jAj8Ft8sd07R3d0lVXH-50" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <mxPoint x="324" y="700" as="sourcePoint" />
-            <mxPoint x="364" y="700" as="targetPoint" />
+            <mxPoint x="324" y="640" as="sourcePoint" />
+            <mxPoint x="364" y="640" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="7jAj8Ft8sd07R3d0lVXH-51" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="CAN" vertex="1">
           <mxGeometry height="30" width="60" x="274" y="540" as="geometry" />
         </mxCell>
         <mxCell id="7jAj8Ft8sd07R3d0lVXH-52" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="MD&amp;nbsp;&lt;br&gt;Cytron MDD20A&lt;br&gt;①" vertex="1">
-          <mxGeometry height="60" width="120" x="624" y="340" as="geometry" />
+          <mxGeometry height="60" width="120" x="624" y="280" as="geometry" />
         </mxCell>
         <mxCell id="7jAj8Ft8sd07R3d0lVXH-53" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="MD&amp;nbsp;&lt;br&gt;Cytron MDD20A&lt;br&gt;②" vertex="1">
-          <mxGeometry height="60" width="120" x="624" y="580" as="geometry" />
+          <mxGeometry height="60" width="120" x="624" y="540" as="geometry" />
         </mxCell>
         <mxCell id="7jAj8Ft8sd07R3d0lVXH-55" edge="1" parent="1" source="7jAj8Ft8sd07R3d0lVXH-15" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="7jAj8Ft8sd07R3d0lVXH-52" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
             <Array as="points">
-              <mxPoint x="594" y="315" />
-              <mxPoint x="594" y="370" />
+              <mxPoint x="594" y="250" />
+              <mxPoint x="594" y="310" />
             </Array>
             <mxPoint x="504" y="680" as="sourcePoint" />
             <mxPoint x="554" y="630" as="targetPoint" />
@@ -140,105 +134,72 @@
         <mxCell id="7jAj8Ft8sd07R3d0lVXH-56" edge="1" parent="1" source="7jAj8Ft8sd07R3d0lVXH-20" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
             <Array as="points">
-              <mxPoint x="594" y="435" />
+              <mxPoint x="594" y="370" />
             </Array>
             <mxPoint x="504" y="680" as="sourcePoint" />
-            <mxPoint x="594" y="370" as="targetPoint" />
+            <mxPoint x="594" y="310" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="7jAj8Ft8sd07R3d0lVXH-57" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="">
+        <mxCell id="7jAj8Ft8sd07R3d0lVXH-57" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
             <Array as="points">
+              <mxPoint x="594" y="510" />
               <mxPoint x="594" y="570" />
-              <mxPoint x="594" y="610" />
             </Array>
-            <mxPoint x="564" y="570" as="sourcePoint" />
-            <mxPoint x="624" y="610" as="targetPoint" />
+            <mxPoint x="564" y="510" as="sourcePoint" />
+            <mxPoint x="624" y="570" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="7jAj8Ft8sd07R3d0lVXH-58" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
             <Array as="points">
-              <mxPoint x="594" y="700" />
+              <mxPoint x="594" y="640" />
             </Array>
-            <mxPoint x="564" y="700" as="sourcePoint" />
-            <mxPoint x="594" y="610" as="targetPoint" />
+            <mxPoint x="564" y="640" as="sourcePoint" />
+            <mxPoint x="594" y="570" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="7jAj8Ft8sd07R3d0lVXH-59" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="MD&amp;nbsp;&lt;br&gt;Cytron MD20A①" vertex="1">
-          <mxGeometry height="50" width="120" x="624" y="712" as="geometry" />
+        <mxCell id="7jAj8Ft8sd07R3d0lVXH-59" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="MD(取得)&lt;br&gt;pololu dual ①" vertex="1">
+          <mxGeometry height="50" width="120" x="624" y="945" as="geometry" />
         </mxCell>
-        <mxCell id="7jAj8Ft8sd07R3d0lVXH-63" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="MD&amp;nbsp;&lt;br&gt;Cytron MD20A②" vertex="1">
-          <mxGeometry height="50" width="120" x="624" y="780" as="geometry" />
+        <mxCell id="7jAj8Ft8sd07R3d0lVXH-64" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="MD(昇降)&amp;nbsp;&lt;br&gt;Cytron MD20A③" vertex="1">
+          <mxGeometry height="50" width="120" x="624" y="1007" as="geometry" />
         </mxCell>
-        <mxCell id="7jAj8Ft8sd07R3d0lVXH-64" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="MD&amp;nbsp;&lt;br&gt;Cytron MD20A③" vertex="1">
-          <mxGeometry height="50" width="120" x="624" y="847" as="geometry" />
+        <mxCell id="7jAj8Ft8sd07R3d0lVXH-66" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="MD&lt;br&gt;Cytron MD20A&lt;br&gt;①" vertex="1">
+          <mxGeometry height="50" width="120" x="624" y="735" as="geometry" />
         </mxCell>
-        <mxCell id="7jAj8Ft8sd07R3d0lVXH-66" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="MD&amp;nbsp;&lt;br&gt;Cytron MD20A④" vertex="1">
-          <mxGeometry height="50" width="120" x="624" y="915" as="geometry" />
-        </mxCell>
-        <mxCell id="7jAj8Ft8sd07R3d0lVXH-67" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="MD&amp;nbsp;&lt;br&gt;Cytron MD20A⑤" vertex="1">
-          <mxGeometry height="50" width="120" x="624" y="982" as="geometry" />
-        </mxCell>
-        <mxCell id="7jAj8Ft8sd07R3d0lVXH-68" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="7jAj8Ft8sd07R3d0lVXH-64" value="">
+        <mxCell id="7jAj8Ft8sd07R3d0lVXH-68" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <mxPoint x="564" y="872" as="sourcePoint" />
-            <mxPoint x="674" y="782" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="7jAj8Ft8sd07R3d0lVXH-79" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="7jAj8Ft8sd07R3d0lVXH-59" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <Array as="points">
-              <mxPoint x="594" y="737" />
-            </Array>
-            <mxPoint x="594" y="872" as="sourcePoint" />
-            <mxPoint x="374" y="722" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="7jAj8Ft8sd07R3d0lVXH-82" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=0.001;entryY=0.538;entryDx=0;entryDy=0;entryPerimeter=0;" target="7jAj8Ft8sd07R3d0lVXH-66" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <mxPoint x="594" y="942" as="sourcePoint" />
-            <mxPoint x="624" y="940" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="7jAj8Ft8sd07R3d0lVXH-84" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="7jAj8Ft8sd07R3d0lVXH-63" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <mxPoint x="594" y="805" as="sourcePoint" />
-            <mxPoint x="614" y="792" as="targetPoint" />
+            <mxPoint x="564" y="1032" as="sourcePoint" />
+            <mxPoint x="624" y="1032" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="7jAj8Ft8sd07R3d0lVXH-85" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="エアシリ基板" vertex="1">
-          <mxGeometry height="50" width="120" x="624" y="1049" as="geometry" />
+          <mxGeometry height="50" width="120" x="624" y="1070" as="geometry" />
         </mxCell>
-        <mxCell id="7jAj8Ft8sd07R3d0lVXH-87" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=0.006;entryY=0.578;entryDx=0;entryDy=0;entryPerimeter=0;" target="7jAj8Ft8sd07R3d0lVXH-85" value="">
+        <mxCell id="7jAj8Ft8sd07R3d0lVXH-87" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=0.006;entryY=0.578;entryDx=0;entryDy=0;entryPerimeter=0;endFill=1;" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
             <Array as="points">
-              <mxPoint x="594" y="1077.9" />
+              <mxPoint x="590" y="1099" />
             </Array>
-            <mxPoint x="594" y="870" as="sourcePoint" />
-            <mxPoint x="594" y="980" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="7jAj8Ft8sd07R3d0lVXH-88" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="7jAj8Ft8sd07R3d0lVXH-67" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <mxPoint x="594" y="1007" as="sourcePoint" />
-            <mxPoint x="614" y="990" as="targetPoint" />
+            <mxPoint x="590" y="1030" as="sourcePoint" />
+            <mxPoint x="623.9999999999999" y="1099" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="vJew-iT3ezXqCYUKen5m-2" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="①" vertex="1">
-          <mxGeometry height="30" width="60" x="310" y="280" as="geometry" />
+          <mxGeometry height="30" width="60" x="310" y="220" as="geometry" />
         </mxCell>
         <mxCell id="vJew-iT3ezXqCYUKen5m-3" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="②" vertex="1">
-          <mxGeometry height="30" width="60" x="310" y="410" as="geometry" />
+          <mxGeometry height="30" width="60" x="310" y="350" as="geometry" />
         </mxCell>
         <mxCell id="vJew-iT3ezXqCYUKen5m-4" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="③" vertex="1">
-          <mxGeometry height="30" width="60" x="310" y="540" as="geometry" />
+          <mxGeometry height="30" width="60" x="310" y="485" as="geometry" />
         </mxCell>
         <mxCell id="vJew-iT3ezXqCYUKen5m-5" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="④" vertex="1">
-          <mxGeometry height="30" width="60" x="310" y="670" as="geometry" />
+          <mxGeometry height="30" width="60" x="310" y="615" as="geometry" />
         </mxCell>
-        <mxCell id="vJew-iT3ezXqCYUKen5m-6" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="⑤" vertex="1">
-          <mxGeometry height="30" width="60" x="310" y="840" as="geometry" />
+        <mxCell id="vJew-iT3ezXqCYUKen5m-6" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="⑦" vertex="1">
+          <mxGeometry height="30" width="60" x="310" y="1010" as="geometry" />
         </mxCell>
         <mxCell id="vJew-iT3ezXqCYUKen5m-7" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" value="&lt;h1&gt;【データ仕様】&lt;/h1&gt;" vertex="1">
           <mxGeometry height="70" width="180" x="60" y="1210" as="geometry" />
@@ -254,6 +215,70 @@
         </mxCell>
         <mxCell id="UQ-SNAUSBgdDSWdTdga4-2" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;ESP32 DevKit①(マスター)&lt;/h1&gt;&lt;ul&gt;&lt;li&gt;main.cpp&lt;/li&gt;&lt;ul&gt;&lt;li&gt;S_BUS.hインクルード&lt;/li&gt;&lt;li&gt;RTOSタスク① S.BUS処理(中身はS_BUS.h)&lt;/li&gt;&lt;li&gt;RTOSタスク② 通信断時の非常停止&lt;/li&gt;&lt;li&gt;RTOSタスク③ 各マイコンへのCAN送信&lt;/li&gt;&lt;/ul&gt;&lt;/ul&gt;&lt;ul&gt;&lt;li&gt;S_BUS.cpp&lt;/li&gt;&lt;li&gt;S_BUS.h&lt;/li&gt;&lt;/ul&gt;" vertex="1">
           <mxGeometry height="300" width="410" x="80" y="2480" as="geometry" />
+        </mxCell>
+        <mxCell id="o4J3NV7O9YnokUKxXt7o-1" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#e1d5e7;strokeColor=#9673a6;" value="xiao ESP32C3 射出①" vertex="1">
+          <mxGeometry height="110" width="200" x="364" y="705" as="geometry" />
+        </mxCell>
+        <mxCell id="o4J3NV7O9YnokUKxXt7o-2" parent="o4J3NV7O9YnokUKxXt7o-1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="&lt;ul&gt;&lt;li&gt;CAN受信&lt;/li&gt;&lt;li&gt;エンコーダデータ取得&lt;/li&gt;&lt;li&gt;PID制御&lt;/li&gt;&lt;li&gt;PWM出力&lt;/li&gt;&lt;/ul&gt;" vertex="1">
+          <mxGeometry height="30" width="200" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="o4J3NV7O9YnokUKxXt7o-3" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#e1d5e7;strokeColor=#9673a6;" value="xiao ESP32C3 射出②" vertex="1">
+          <mxGeometry height="110" width="200" x="364" y="835" as="geometry" />
+        </mxCell>
+        <mxCell id="o4J3NV7O9YnokUKxXt7o-4" parent="o4J3NV7O9YnokUKxXt7o-3" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="&lt;ul&gt;&lt;li&gt;CAN受信&lt;/li&gt;&lt;li&gt;エンコーダデータ取得&lt;/li&gt;&lt;li&gt;PID制御&lt;/li&gt;&lt;li&gt;PWM出力&lt;/li&gt;&lt;/ul&gt;" vertex="1">
+          <mxGeometry height="30" width="200" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="o4J3NV7O9YnokUKxXt7o-8" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=-0.001;entryY=0.338;entryDx=0;entryDy=0;entryPerimeter=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="324" y="510.14" as="sourcePoint" />
+            <mxPoint x="364" y="510" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o4J3NV7O9YnokUKxXt7o-11" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="324" y="770" as="sourcePoint" />
+            <mxPoint x="364" y="770" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o4J3NV7O9YnokUKxXt7o-12" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="⑤" vertex="1">
+          <mxGeometry height="30" width="60" x="310" y="745" as="geometry" />
+        </mxCell>
+        <mxCell id="o4J3NV7O9YnokUKxXt7o-13" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="324" y="900" as="sourcePoint" />
+            <mxPoint x="364" y="900" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o4J3NV7O9YnokUKxXt7o-14" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="⑥" vertex="1">
+          <mxGeometry height="30" width="60" x="310" y="875" as="geometry" />
+        </mxCell>
+        <mxCell id="o4J3NV7O9YnokUKxXt7o-16" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points">
+              <mxPoint x="590" y="969.92" />
+            </Array>
+            <mxPoint x="590" y="1030" as="sourcePoint" />
+            <mxPoint x="624" y="969.92" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o4J3NV7O9YnokUKxXt7o-17" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="MD&lt;br&gt;Cytron MD20A&lt;br&gt;②" vertex="1">
+          <mxGeometry height="50" width="120" x="624" y="800" as="geometry" />
+        </mxCell>
+        <mxCell id="o4J3NV7O9YnokUKxXt7o-18" edge="1" parent="1" source="o4J3NV7O9YnokUKxXt7o-1" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="7jAj8Ft8sd07R3d0lVXH-66" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="570" y="760" as="sourcePoint" />
+            <mxPoint x="660" y="780" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o4J3NV7O9YnokUKxXt7o-19" edge="1" parent="1" source="o4J3NV7O9YnokUKxXt7o-4" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="o4J3NV7O9YnokUKxXt7o-17" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points">
+              <mxPoint x="590" y="900" />
+              <mxPoint x="590" y="825" />
+            </Array>
+            <mxPoint x="640" y="890" as="sourcePoint" />
+            <mxPoint x="690" y="840" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
