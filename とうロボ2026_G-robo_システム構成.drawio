@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="ページ-1" id="iU3d9pDwjOwahh7N6tyW">
-    <mxGraphModel dx="2004" dy="1139" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="240" dy="379" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -340,7 +340,7 @@
         <mxCell id="o4J3NV7O9YnokUKxXt7o-36" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=#FF3333;fontStyle=1" value="&lt;div&gt;テストモードでの起動時は起動時にマスターに記録されたパラメータを子機に一斉送信し、記録が完了したら始動&lt;/div&gt;&lt;div&gt;パラメータ記録にトグルを入れるとその時の昇降機構のポテンショメータの値を親機の不揮発性メモリに自動記録&lt;/div&gt;" vertex="1">
           <mxGeometry height="30" width="686" x="69.01" y="3199" as="geometry" />
         </mxCell>
-        <mxCell id="o4J3NV7O9YnokUKxXt7o-49" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;共通&lt;/h1&gt;&lt;ul&gt;&lt;li&gt;CAN.cpp/CAN.h&lt;/li&gt;&lt;ul&gt;&lt;li&gt;CAN送受信処理&lt;/li&gt;&lt;/ul&gt;&lt;/ul&gt;&lt;ul&gt;&lt;li&gt;CAN_protocol.h&lt;/li&gt;&lt;ul&gt;&lt;li&gt;CAN用データ定義&lt;/li&gt;&lt;/ul&gt;&lt;/ul&gt;&lt;ul&gt;&lt;/ul&gt;" vertex="1">
+        <mxCell id="o4J3NV7O9YnokUKxXt7o-49" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;共通&lt;/h1&gt;&lt;ul&gt;&lt;li&gt;can.cpp/can.h&lt;/li&gt;&lt;ul&gt;&lt;li&gt;CAN送受信処理&lt;/li&gt;&lt;/ul&gt;&lt;/ul&gt;&lt;ul&gt;&lt;li&gt;can_protocol.h&lt;/li&gt;&lt;ul&gt;&lt;li&gt;CAN用データ定義&lt;/li&gt;&lt;/ul&gt;&lt;/ul&gt;&lt;ul&gt;&lt;/ul&gt;" vertex="1">
           <mxGeometry height="130" width="410" x="69.01" y="3620" as="geometry" />
         </mxCell>
         <mxCell id="o4J3NV7O9YnokUKxXt7o-50" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;xiao&lt;/h1&gt;&lt;ul&gt;&lt;li&gt;main.cpp&lt;/li&gt;&lt;ul&gt;&lt;li&gt;CAN.h, CAN_Protocol.hインクルード&lt;/li&gt;&lt;li&gt;モード受信&lt;/li&gt;&lt;li&gt;(テストモードの場合のみ)パラメータ送信&lt;/li&gt;&lt;li&gt;エンコーダ値取得&lt;/li&gt;&lt;li&gt;PID制御&lt;/li&gt;&lt;li&gt;PWM出力&lt;/li&gt;&lt;/ul&gt;&lt;/ul&gt;&lt;ul&gt;&lt;li&gt;params.cpp/params.h&lt;/li&gt;&lt;ul&gt;&lt;li&gt;パラメータ定義&lt;/li&gt;&lt;/ul&gt;&lt;/ul&gt;" vertex="1">
