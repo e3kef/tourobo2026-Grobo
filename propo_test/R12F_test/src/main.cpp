@@ -6,6 +6,9 @@ HardwareSerial sbus(2);
 
 uint8_t frame[25];
 uint8_t byte_count = 0;
+uint16_t channels[12];
+
+void decodeSbus();
 
 void setup()
 {
@@ -31,13 +34,32 @@ void loop()
 
         if (byte_count == 25)
         {
-            for (int i = 0; i < 25; i++)
+            decodeSbus();
+
+            for (int ch = 0; ch < 12; ch++)
             {
-                Serial.printf("%02X ", frame[i]);
+                Serial.printf("CH%d:%4d ", ch + 1, channels[ch]);
             }
 
             Serial.println();
             byte_count = 0;
         }
+    }
+} 
+
+void decodeSbus()
+{
+    for (int ch = 0; ch < 12; ch++)
+    {
+        int bit_index = ch * 11;
+        int byte_index = 1 + bit_index / 8;
+        int shift = bit_index % 8;
+
+        uint32_t data =
+            ((uint32_t)frame[byte_index]) |
+            ((uint32_t)frame[byte_index + 1] << 8) |
+            ((uint32_t)frame[byte_index + 2] << 16);
+
+        channels[ch] = (data >> shift) & 0x07FF;
     }
 }
