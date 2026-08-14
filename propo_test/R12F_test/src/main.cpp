@@ -8,6 +8,8 @@ uint8_t frame[25];
 uint8_t byte_count = 0;
 uint16_t channels[12];
 
+uint32_t last_frame_us = 0;
+
 void decodeSbus();
 
 void setup()
@@ -34,14 +36,23 @@ void loop()
 
         if (byte_count == 25)
         {
-            decodeSbus();
+            uint32_t now_us = micros();
 
-            for (int ch = 0; ch < 12; ch++)
+            if (last_frame_us != 0)
             {
-                Serial.printf("CH%d:%4d ", ch + 1, channels[ch]);
+                uint32_t period_us = now_us - last_frame_us;
+
+                Serial.printf(
+                    "S.BUS period: %lu us (%.2f ms)\n",
+                    period_us,
+                    period_us / 1000.0f
+                );
             }
 
-            Serial.println();
+            last_frame_us = now_us;
+
+            decodeSbus();
+
             byte_count = 0;
         }
     }
