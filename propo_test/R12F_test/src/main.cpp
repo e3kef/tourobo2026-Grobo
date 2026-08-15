@@ -45,23 +45,35 @@ void loop()
 
         if (byte_count == 25)
         {
-            uint32_t now_us = micros();
+            // uint32_t now_us = micros();
 
-            if (last_frame_us != 0)
-            {
-                uint32_t period_us = now_us - last_frame_us;
+            // if (last_frame_us != 0)
+            // {
+            //     uint32_t period_us = now_us - last_frame_us;
 
-                Serial.printf(
-                    "S.BUS period: %lu us (%.2f ms)\n",
-                    period_us,
-                    period_us / 1000.0f
-                );
-            }
+            //     Serial.printf(
+            //         "S.BUS period: %lu us (%.2f ms)\n",
+            //         period_us,
+            //         period_us / 1000.0f
+            //     );
+            // }
 
-            last_frame_us = now_us;
+            // last_frame_us = now_us;
 
+            // decodeSbus();
+
+            // byte_count = 0;
+
+            for (int i = 0; i < 25; i++)
             decodeSbus();
 
+            for (int ch = 0; ch < 12; ch++)
+            {
+                // Serial.printf("%02X ", frame[i]);
+                Serial.printf("CH%d:%4d ", ch + 1, channels[ch]);
+            }
+
+            Serial.println();
             byte_count = 0;
         }
     }
