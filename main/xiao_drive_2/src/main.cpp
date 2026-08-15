@@ -7,10 +7,10 @@
 // Setting
 // =====================
 
-constexpr int CAN_TX = 5; 
-constexpr int CAN_RX = 4;  
+constexpr int CAN_TX = 4; 
+constexpr int CAN_RX = 5;  
 
-constexpr uint8_t MOTOR_INDEX = 1;
+constexpr uint8_t MOTOR_INDEX = 2;
 
 constexpr uint32_t CAN_TIMEOUT_MS = 2000;
 

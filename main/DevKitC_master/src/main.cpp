@@ -43,21 +43,27 @@ void setup()
 void loop()
 {
     vTaskDelay(pdMS_TO_TICKS(1000));
-    Serial.println("loop");
 }
 
 void taskSBus(void *arg)
 {
+    TickType_t last_wake_time = xTaskGetTickCount();
+
     while (true)
     {
         SBus::update();
-        vTaskDelayUntil(pdMS_TO_TICKS(10));
+        vTaskDelayUntil(
+            &last_wake_time,
+            pdMS_TO_TICKS(10)
+        );
     }
 }
 
 void taskControl(void *arg)
 {
     int16_t drive_target[4];
+
+    TickType_t last_wake_time = xTaskGetTickCount();
 
     while (true)
     {
@@ -88,6 +94,9 @@ void taskControl(void *arg)
         // ここは現在のCANライブラリの関数名に合わせる
         CAN_send(CAN_ID_DRIVE_TARGET, drive_target);
 
-        vTaskDelay(pdMS_TO_TICKS(10));
+        vTaskDelayUntil(
+            &last_wake_time,
+            pdMS_TO_TICKS(10)
+        );
     }
 }
