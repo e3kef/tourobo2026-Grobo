@@ -7,12 +7,13 @@
 // Setting
 // =====================
 
-constexpr int CAN_TX = 5; 
-constexpr int CAN_RX = 4;  
+// シールド基板はTX5RX4
+constexpr int CAN_TX = 4; 
+constexpr int CAN_RX = 5;  
 
 constexpr uint8_t MOTOR_INDEX = 1;
 
-constexpr uint32_t CAN_TIMEOUT_MS = 2000;
+constexpr uint32_t CAN_TIMEOUT_MS = 10000;
 
 
 // =====================
@@ -68,6 +69,7 @@ void loop()
     if (millis() - last_target_time > CAN_TIMEOUT_MS)
     {
         target = 0;
+        Serial.println("TIMEOUT");
     }
 
     // 非常停止
@@ -96,7 +98,18 @@ void receiveCAN()
     int16_t data[4];
 
     while (CAN_receive(id, data))
-    {
+    {   
+        // // --- for debug ---
+        // Serial.printf(
+        //     "RX ID: 0x%03X data: %d %d %d %d\n",
+        //     id,
+        //     data[0],
+        //     data[1],
+        //     data[2],
+        //     data[3]
+        // );
+        // // --- for debug ---
+
         switch (id)
         {
             case CAN_ID_SYSTEM_STOP:
