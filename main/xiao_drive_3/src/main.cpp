@@ -14,7 +14,6 @@ constexpr int CAN_TX = 5;
 constexpr int CAN_RX = 4;
 
 // 足回りモータ番号
-// drive_1なら1
 constexpr uint8_t MOTOR_INDEX = 3;
 
 // Encoder
@@ -38,7 +37,6 @@ constexpr int PWM_DUTY_LIMIT = 1023;
 constexpr uint32_t CAN_TIMEOUT_MS = 100;
 constexpr uint32_t CONTROL_PERIOD_MS = 10;
 
-constexpr int16_t DRIVE_TARGET_MAX = 1000;
 constexpr float MAX_RPM = 265.0f;
 
 constexpr float PID_OUTPUT_MAX = 1000.0f;
@@ -48,7 +46,7 @@ constexpr float PID_OUTPUT_MAX = 1000.0f;
 // =====================
 
 // 仮値
-constexpr float KP = 0.0f;
+constexpr float KP = 2.0f;
 constexpr float KI = 0.0f;
 constexpr float KD = 0.0f;
 
@@ -80,8 +78,6 @@ void taskCAN(void *arg);
 void taskControl(void *arg);
 
 void receiveCAN();
-
-float targetToRPM(int16_t target);
 
 void setMotorPWM(float pwm);
 
@@ -278,7 +274,11 @@ void taskControl(void *arg)
             // ---------------------
 
             float target_rpm =
-                targetToRPM(target_local);
+                constrain(
+                    static_cast<float>(target_local),
+                    -MAX_RPM,
+                    MAX_RPM
+                );
 
             // ---------------------
             // Velocity PID
@@ -414,30 +414,6 @@ void receiveCAN()
 }
 
 // =====================
-// Target -> RPM
-// =====================
-
-float targetToRPM(int16_t target_value)
-{
-    if (target_value > DRIVE_TARGET_MAX)
-    {
-        target_value =
-            DRIVE_TARGET_MAX;
-    }
-    else if (
-        target_value < -DRIVE_TARGET_MAX)
-    {
-        target_value =
-            -DRIVE_TARGET_MAX;
-    }
-
-    return
-        static_cast<float>(target_value)
-        / DRIVE_TARGET_MAX
-        * MAX_RPM;
-}
-
-// =====================
 // Motor
 // =====================
 
@@ -494,4 +470,25 @@ void setMotorPWM(float pwm)
         PWM_CHANNEL,
         duty
     );
+
+    Serial.println(duty);
 }
+
+
+// #include <Arduino.h>
+
+// constexpr int PWM_PIN = 20;
+// constexpr int DIR_PIN = 8;
+
+// void setup()
+// {
+//     pinMode(PWM_PIN, OUTPUT);
+//     pinMode(DIR_PIN, OUTPUT);
+
+//     digitalWrite(PWM_PIN, HIGH);
+//     digitalWrite(DIR_PIN, LOW);
+// }
+
+// void loop()
+// {
+// }

@@ -24,20 +24,19 @@ constexpr int ENCODER_B = 6;
 constexpr int PWM_PIN = 8;
 constexpr int DIR_PIN = 20;
 
-// PWM
+// PWM     
 constexpr int PWM_CHANNEL = 0;
 constexpr int PWM_FREQ = 20000;
 constexpr int PWM_RESOLUTION = 10;
 
 // 10bit PWM: 0～1023
 // 24Vで12Vモータを使うため約50%に制限→解除
-constexpr int PWM_DUTY_LIMIT = 512;
+constexpr int PWM_DUTY_LIMIT = 1023;
 
 // Control
 constexpr uint32_t CAN_TIMEOUT_MS = 100;
 constexpr uint32_t CONTROL_PERIOD_MS = 10;
 
-constexpr int16_t DRIVE_TARGET_MAX = 1000;
 constexpr float MAX_RPM = 265.0f;
 
 constexpr float PID_OUTPUT_MAX = 1000.0f;
@@ -47,7 +46,7 @@ constexpr float PID_OUTPUT_MAX = 1000.0f;
 // =====================
 
 // 仮値
-constexpr float KP = 0.0f;
+constexpr float KP = 2.0f;
 constexpr float KI = 0.0f;
 constexpr float KD = 0.0f;
 
@@ -79,8 +78,6 @@ void taskCAN(void *arg);
 void taskControl(void *arg);
 
 void receiveCAN();
-
-float targetToRPM(int16_t target);
 
 void setMotorPWM(float pwm);
 
@@ -277,7 +274,11 @@ void taskControl(void *arg)
             // ---------------------
 
             float target_rpm =
-                targetToRPM(target_local);
+                constrain(
+                    static_cast<float>(target_local),
+                    -MAX_RPM,
+                    MAX_RPM
+                );
 
             // ---------------------
             // Velocity PID
@@ -410,30 +411,6 @@ void receiveCAN()
             break;
         }
     }
-}
-
-// =====================
-// Target -> RPM
-// =====================
-
-float targetToRPM(int16_t target_value)
-{
-    if (target_value > DRIVE_TARGET_MAX)
-    {
-        target_value =
-            DRIVE_TARGET_MAX;
-    }
-    else if (
-        target_value < -DRIVE_TARGET_MAX)
-    {
-        target_value =
-            -DRIVE_TARGET_MAX;
-    }
-
-    return
-        static_cast<float>(target_value)
-        / DRIVE_TARGET_MAX
-        * MAX_RPM;
 }
 
 // =====================
