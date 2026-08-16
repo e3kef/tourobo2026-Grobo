@@ -21,8 +21,8 @@ constexpr int ENCODER_A = 7;
 constexpr int ENCODER_B = 6;
 
 // Motor
-constexpr int PWM_PIN = 20;
-constexpr int DIR_PIN = 8;
+constexpr int PWM_PIN = 8;
+constexpr int DIR_PIN = 20;
 
 // PWM
 constexpr int PWM_CHANNEL = 0;

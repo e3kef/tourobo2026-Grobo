@@ -21,8 +21,8 @@ constexpr int ENCODER_A = 7;
 constexpr int ENCODER_B = 6;
 
 // Motor
-constexpr int PWM_PIN = 20;
-constexpr int DIR_PIN = 8;
+constexpr int PWM_PIN = 8;
+constexpr int DIR_PIN = 20;
 
 // PWM
 constexpr int PWM_CHANNEL = 0;
@@ -31,7 +31,7 @@ constexpr int PWM_RESOLUTION = 10;
 
 // 10bit PWM: 0～1023
 // 24Vで12Vモータを使うため約50%に制限→解除
-constexpr int PWM_DUTY_LIMIT = 1023;
+constexpr int PWM_DUTY_LIMIT = 512;
 
 // Control
 constexpr uint32_t CAN_TIMEOUT_MS = 100;
@@ -493,4 +493,25 @@ void setMotorPWM(float pwm)
         PWM_CHANNEL,
         duty
     );
+
+    Serial.println(duty);
 }
+
+
+// #include <Arduino.h>
+
+// constexpr int PWM_PIN = 20;
+// constexpr int DIR_PIN = 8;
+
+// void setup()
+// {
+//     pinMode(PWM_PIN, OUTPUT);
+//     pinMode(DIR_PIN, OUTPUT);
+
+//     digitalWrite(PWM_PIN, HIGH);
+//     digitalWrite(DIR_PIN, LOW);
+// }
+
+// void loop()
+// {
+// }
