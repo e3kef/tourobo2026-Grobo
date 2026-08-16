@@ -2,7 +2,7 @@
 
 // #include "SBUSReceiver.h"
 
-constexpr int SBUS_RX = 16;
+constexpr int SBUS_RX = 14;
 
 HardwareSerial hardware_serial(2);
 

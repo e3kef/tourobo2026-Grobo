@@ -25,24 +25,65 @@ constexpr int SBUS_DEADZONE = 20;
 // スティック内部演算用
 constexpr int16_t STICK_MAX = 1000;
 
+// ------------------------------------------------------------
+// 足回り
+// ------------------------------------------------------------
+
 // 足回り最大目標回転数
 constexpr int16_t DRIVE_MAX_RPM = 265;
+
+// ------------------------------------------------------------
+// 射出
+// ------------------------------------------------------------
+
+// 射出モーター最大目標RPM
+//
+// CH6 / CH8 のダイヤル位置を
+// 0 ～ 100 % として、この値までのRPMに変換
+constexpr int16_t SHOOT_MOTOR1_MAX_RPM = 1695;
+constexpr int16_t SHOOT_MOTOR2_MAX_RPM = 2290;
+
+// 射出最大動作時間
+constexpr uint32_t SHOOT_DURATION_MS = 5000;
+
+// CH9
+// MIDとMAXの中間より大きければ「下」と判定
+//
+// CH9:
+// 上   ≈ 326
+// 中央 ≈ 993
+// 下   ≈ 1659
+constexpr int SHOOT_SWITCH_ON_THRESHOLD =
+    (SBUS_MID + SBUS_MAX) / 2;
 
 
 // ============================================================
 // Shared data
 // ============================================================
 
-struct DriveInput
+struct ControlInput
 {
+    // 足回り
     int16_t x;
     int16_t y;
     int16_t r;
 
+    // 射出
+    //
+    // CH6 = 左ダイヤル
+    // CH8 = 右ダイヤル
+    // CH9 = 射出トグル
+    uint16_t raw_shoot_motor1;
+    uint16_t raw_shoot_motor2;
+    uint16_t raw_shoot_switch;
+
     bool connected;
 };
 
-DriveInput drive_input = {
+ControlInput control_input = {
+    0,
+    0,
+    0,
     0,
     0,
     0,
@@ -50,7 +91,8 @@ DriveInput drive_input = {
 };
 
 // S.BUS task と Control task 間の共有データ保護
-portMUX_TYPE drive_input_mux = portMUX_INITIALIZER_UNLOCKED;
+portMUX_TYPE control_input_mux =
+    portMUX_INITIALIZER_UNLOCKED;
 
 
 // ============================================================
@@ -74,6 +116,15 @@ void calcDriveTarget(
     int16_t y,
     int16_t r,
     int16_t target[4]
+);
+
+bool isShootSwitchOn(
+    uint16_t raw
+);
+
+int16_t dialToRPM(
+    uint16_t raw,
+    int16_t max_rpm
 );
 
 
@@ -155,7 +206,8 @@ void loop()
 
 void taskSBus(void *arg)
 {
-    TickType_t last_wake_time = xTaskGetTickCount();
+    TickType_t last_wake_time =
+        xTaskGetTickCount();
 
     while (true)
     {
@@ -166,20 +218,44 @@ void taskSBus(void *arg)
         SBus::update();
 
         // ---------------------
-        // 必要なCHを取得
+        // 足回りCH取得
         // ---------------------
 
         // CH1
         // 右スティック左右
-        uint16_t raw_x = SBus::getChannel(0);
+        uint16_t raw_x =
+            SBus::getChannel(0);
 
         // CH3
         // 右スティック上下
-        uint16_t raw_y = SBus::getChannel(2);
+        uint16_t raw_y =
+            SBus::getChannel(2);
 
         // CH4
         // 左スティック左右
-        uint16_t raw_r = SBus::getChannel(3);
+        uint16_t raw_r =
+            SBus::getChannel(3);
+
+        // ---------------------
+        // 射出CH取得
+        // ---------------------
+
+        // CH6
+        // 左ダイヤル
+        // 射出モーター1
+        uint16_t raw_shoot_motor1 =
+            SBus::getChannel(5);
+
+        // CH8
+        // 右ダイヤル
+        // 射出モーター2
+        uint16_t raw_shoot_motor2 =
+            SBus::getChannel(7);
+
+        // CH9
+        // 射出トグル
+        uint16_t raw_shoot_switch =
+            SBus::getChannel(8);
 
         // ---------------------
         // S.BUS接続確認
@@ -189,9 +265,15 @@ void taskSBus(void *arg)
             SBus::isConnected() &&
             isValidSBusValue(raw_x) &&
             isValidSBusValue(raw_y) &&
-            isValidSBusValue(raw_r);
+            isValidSBusValue(raw_r) &&
+            isValidSBusValue(raw_shoot_motor1) &&
+            isValidSBusValue(raw_shoot_motor2) &&
+            isValidSBusValue(raw_shoot_switch);
 
-        DriveInput input_local = {
+        ControlInput input_local = {
+            0,
+            0,
+            0,
             0,
             0,
             0,
@@ -200,6 +282,10 @@ void taskSBus(void *arg)
 
         if (connected)
         {
+            // ---------------------
+            // 足回り
+            // ---------------------
+
             // +X = 機体右
             input_local.x =
                 normalizeStick(
@@ -207,7 +293,7 @@ void taskSBus(void *arg)
                     false
                 );
 
-            // CH3は
+            // CH3
             // 上端 = 326
             //
             // +Y = 機体前方
@@ -225,6 +311,19 @@ void taskSBus(void *arg)
                     false
                 );
 
+            // ---------------------
+            // 射出
+            // ---------------------
+
+            input_local.raw_shoot_motor1 =
+                raw_shoot_motor1;
+
+            input_local.raw_shoot_motor2 =
+                raw_shoot_motor2;
+
+            input_local.raw_shoot_switch =
+                raw_shoot_switch;
+
             input_local.connected = true;
         }
 
@@ -232,11 +331,16 @@ void taskSBus(void *arg)
         // 共有変数更新
         // ---------------------
 
-        portENTER_CRITICAL(&drive_input_mux);
+        portENTER_CRITICAL(
+            &control_input_mux
+        );
 
-        drive_input = input_local;
+        control_input =
+            input_local;
 
-        portEXIT_CRITICAL(&drive_input_mux);
+        portEXIT_CRITICAL(
+            &control_input_mux
+        );
 
         // ---------------------
         // 10 ms period
@@ -244,7 +348,9 @@ void taskSBus(void *arg)
 
         vTaskDelayUntil(
             &last_wake_time,
-            pdMS_TO_TICKS(TASK_PERIOD_MS)
+            pdMS_TO_TICKS(
+                TASK_PERIOD_MS
+            )
         );
     }
 }
@@ -256,7 +362,12 @@ void taskSBus(void *arg)
 
 void taskControl(void *arg)
 {
-    TickType_t last_wake_time = xTaskGetTickCount();
+    TickType_t last_wake_time =
+        xTaskGetTickCount();
+
+    // --------------------------------------------------------
+    // 足回りCAN送信用
+    // --------------------------------------------------------
 
     int16_t drive_target[4] = {
         0,
@@ -265,6 +376,40 @@ void taskControl(void *arg)
         0
     };
 
+    // --------------------------------------------------------
+    // 射出CAN送信用
+    // --------------------------------------------------------
+
+    int16_t shoot_target[4] = {
+        0,
+        0,
+        0,
+        0
+    };
+
+    // --------------------------------------------------------
+    // 射出状態
+    // --------------------------------------------------------
+
+    bool shoot_active = false;
+
+    // falseから開始する
+    //
+    // 起動時にCH9が下がっていた場合、
+    // 勝手に射出開始しないため。
+    //
+    // 一度CH9を停止側へ戻した後、
+    // trueになる。
+    bool shoot_armed = false;
+
+    // 射出開始時刻
+    uint32_t shoot_start_ms = 0;
+
+    // 射出開始時に一度だけ取得して保持するRPM
+    int16_t latched_shoot_rpm_1 = 0;
+    int16_t latched_shoot_rpm_2 = 0;
+
+    // Debug
     uint32_t last_print_ms = 0;
 
     while (true)
@@ -273,17 +418,25 @@ void taskControl(void *arg)
         // 共有入力取得
         // ---------------------
 
-        DriveInput input_local;
+        ControlInput input_local;
 
-        portENTER_CRITICAL(&drive_input_mux);
+        portENTER_CRITICAL(
+            &control_input_mux
+        );
 
-        input_local = drive_input;
+        input_local =
+            control_input;
 
-        portEXIT_CRITICAL(&drive_input_mux);
+        portEXIT_CRITICAL(
+            &control_input_mux
+        );
 
-        // ---------------------
+        // 現在時刻
+        uint32_t now = millis();
+
+        // ====================================================
         // 足回り指示値生成
-        // ---------------------
+        // ====================================================
 
         if (input_local.connected)
         {
@@ -298,25 +451,165 @@ void taskControl(void *arg)
         {
             // S.BUS通信断
             // → 目標RPMを0
+
             drive_target[0] = 0;
             drive_target[1] = 0;
             drive_target[2] = 0;
             drive_target[3] = 0;
         }
 
-        // ---------------------
-        // CAN送信
-        // ---------------------
+        // ====================================================
+        // 射出処理
+        // ====================================================
 
-        bool send_ok =
+        bool shoot_switch_on = false;
+
+        if (input_local.connected)
+        {
+            shoot_switch_on =
+                isShootSwitchOn(
+                    input_local.raw_shoot_switch
+                );
+        }
+
+        // ----------------------------------------------------
+        // S.BUS通信断
+        // ----------------------------------------------------
+
+        if (!input_local.connected)
+        {
+            // 射出即停止
+            shoot_active = false;
+
+            // 再接続時にCH9が下だった場合も
+            // 勝手に再射出しないようdisarm
+            shoot_armed = false;
+
+            latched_shoot_rpm_1 = 0;
+            latched_shoot_rpm_2 = 0;
+        }
+
+        // ----------------------------------------------------
+        // CH9停止側
+        // ----------------------------------------------------
+
+        else if (!shoot_switch_on)
+        {
+            // 動作中であっても即停止
+            shoot_active = false;
+
+            // 次回の射出を許可
+            shoot_armed = true;
+
+            latched_shoot_rpm_1 = 0;
+            latched_shoot_rpm_2 = 0;
+        }
+
+        // ----------------------------------------------------
+        // CH9射出側
+        // ----------------------------------------------------
+
+        else
+        {
+            // -----------------------------------------------
+            // 射出開始
+            // -----------------------------------------------
+
+            if (!shoot_active &&
+                shoot_armed)
+            {
+                // CH9を一度戻すまでは
+                // 再射出させない
+                shoot_armed = false;
+
+                // 開始時刻
+                shoot_start_ms = now;
+
+                // -------------------------------------------
+                // ダイヤル値取得
+                //
+                // ここで一度だけRPMへ変換し、
+                // 今回の射出中は値を固定する
+                // -------------------------------------------
+
+                latched_shoot_rpm_1 =
+                    dialToRPM(
+                        input_local.raw_shoot_motor1,
+                        SHOOT_MOTOR1_MAX_RPM
+                    );
+
+                latched_shoot_rpm_2 =
+                    dialToRPM(
+                        input_local.raw_shoot_motor2,
+                        SHOOT_MOTOR2_MAX_RPM
+                    );
+
+                shoot_active = true;
+            }
+
+            // -----------------------------------------------
+            // 最大5秒で停止
+            // -----------------------------------------------
+
+            if (shoot_active &&
+                (now - shoot_start_ms >=
+                 SHOOT_DURATION_MS))
+            {
+                shoot_active = false;
+
+                latched_shoot_rpm_1 = 0;
+                latched_shoot_rpm_2 = 0;
+            }
+        }
+
+        // ----------------------------------------------------
+        // 射出CANデータ生成
+        // ----------------------------------------------------
+
+        if (shoot_active)
+        {
+            shoot_target[0] =
+                latched_shoot_rpm_1;
+
+            shoot_target[1] =
+                latched_shoot_rpm_2;
+        }
+        else
+        {
+            shoot_target[0] = 0;
+            shoot_target[1] = 0;
+        }
+
+        shoot_target[2] = 0;
+        shoot_target[3] = 0;
+
+        // ====================================================
+        // CAN送信
+        // ====================================================
+
+        // 足回り
+        bool drive_send_ok =
             CAN_send(
                 CAN_ID_DRIVE_TARGET,
                 drive_target
             );
 
-        // ---------------------
+        // 射出
+        //
+        // active中:
+        //   ラッチしたRPMを10ms周期で送信
+        //
+        // inactive中:
+        //   0RPMを10ms周期で送信
+        bool shoot_send_ok =
+            CAN_send(
+                CAN_ID_SHOOT_TARGET,
+                shoot_target
+            );
+
+        // ====================================================
         // Debug
-        // ---------------------
+        // ====================================================
 
         if (millis() - last_print_ms >= 100)
         {
@@ -325,17 +618,36 @@ void taskControl(void *arg)
             Serial.printf(
                 "SBUS:%d | "
                 "x:%4d y:%4d r:%4d | "
-                "RPM M1:%4d M2:%4d M3:%4d M4:%4d | "
-                "CAN:%d\n",
+                "DRIVE M1:%4d M2:%4d M3:%4d M4:%4d | "
+                "SHOOT SW:%4u "
+                "D1:%4u D2:%4u "
+                "ACTIVE:%d ARMED:%d "
+                "RPM1:%5d RPM2:%5d | "
+                "CAN D:%d S:%d\n",
+
                 input_local.connected,
+
                 input_local.x,
                 input_local.y,
                 input_local.r,
+
                 drive_target[0],
                 drive_target[1],
                 drive_target[2],
                 drive_target[3],
-                send_ok
+
+                input_local.raw_shoot_switch,
+                input_local.raw_shoot_motor1,
+                input_local.raw_shoot_motor2,
+
+                shoot_active,
+                shoot_armed,
+
+                shoot_target[0],
+                shoot_target[1],
+
+                drive_send_ok,
+                shoot_send_ok
             );
         }
 
@@ -345,7 +657,9 @@ void taskControl(void *arg)
 
         vTaskDelayUntil(
             &last_wake_time,
-            pdMS_TO_TICKS(TASK_PERIOD_MS)
+            pdMS_TO_TICKS(
+                TASK_PERIOD_MS
+            )
         );
     }
 }
@@ -364,7 +678,8 @@ int16_t normalizeStick(
     // Dead zone
     // ---------------------
 
-    if (abs((int)raw - SBUS_MID) <= SBUS_DEADZONE)
+    if (abs((int)raw - SBUS_MID)
+        <= SBUS_DEADZONE)
     {
         return 0;
     }
@@ -406,7 +721,9 @@ int16_t normalizeStick(
         value = -value;
     }
 
-    return static_cast<int16_t>(value);
+    return static_cast<int16_t>(
+        value
+    );
 }
 
 
@@ -421,9 +738,74 @@ bool isValidSBusValue(
     // 起動直後 channels[] = 0 の状態を
     // 有効なS.BUS入力と判定しないためのチェック
     //
-    // 実測範囲 326 ～ 1659 に対し少し余裕を持たせる
+    // 実測範囲 326 ～ 1659 に対し
+    // 少し余裕を持たせる
 
-    return raw >= 250 && raw <= 1750;
+    return raw >= 250 &&
+           raw <= 1750;
+}
+
+
+// ============================================================
+// Shoot switch
+// ============================================================
+
+bool isShootSwitchOn(
+    uint16_t raw
+)
+{
+    // CH9
+    //
+    // 上   ≈ 326
+    // 中央 ≈ 993
+    // 下   ≈ 1659
+    //
+    // MID-MAX間の中点を超えたら
+    // 「下 = 射出ON」とする
+
+    return raw >
+           SHOOT_SWITCH_ON_THRESHOLD;
+}
+
+
+// ============================================================
+// Shoot dial -> RPM
+// ============================================================
+
+int16_t dialToRPM(
+    uint16_t raw,
+    int16_t max_rpm
+)
+{
+    // 実測範囲外をクランプ
+    raw = constrain(
+        raw,
+        SBUS_MIN,
+        SBUS_MAX
+    );
+
+    // CH6 / CH8
+    //
+    // 326  ->   0 %
+    // 993  -> 約50 %
+    // 1659 -> 100 %
+    //
+    // max_rpm に対する割合として変換
+
+    int32_t rpm =
+        (int32_t)(raw - SBUS_MIN) *
+        max_rpm /
+        (SBUS_MAX - SBUS_MIN);
+
+    rpm = constrain(
+        rpm,
+        0,
+        max_rpm
+    );
+
+    return static_cast<int16_t>(
+        rpm
+    );
 }
 
 
@@ -462,11 +844,13 @@ void calcDriveTarget(
     // 最大絶対値取得
     // ---------------------
 
-    int32_t max_abs = STICK_MAX;
+    int32_t max_abs =
+        STICK_MAX;
 
     for (int i = 0; i < 4; i++)
     {
-        int32_t value = mix[i];
+        int32_t value =
+            mix[i];
 
         if (value < 0)
         {

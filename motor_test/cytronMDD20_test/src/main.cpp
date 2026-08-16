@@ -15,7 +15,7 @@ constexpr uint8_t PWM_RESOLUTION = 10;
 
 // 10bit: 0～1023
 // 50% duty
-constexpr uint16_t PWM_DUTY = 1023;
+constexpr uint16_t PWM_DUTY = 767;
 
 void setup()
 {
@@ -57,6 +57,6 @@ void loop()
 
     vTaskDelayUntil(
         &last_wake_time,
-        pdMS_TO_TICKS(500)
+        pdMS_TO_TICKS(10)
     );
 }
