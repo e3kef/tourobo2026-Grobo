@@ -14,7 +14,8 @@ constexpr int CAN_TX = 5;
 constexpr int CAN_RX = 4;
 
 // 足回りモータ番号
-constexpr uint8_t MOTOR_INDEX = 1;
+// drive_1なら1
+constexpr uint8_t MOTOR_INDEX = 3;
 
 // Encoder
 constexpr int ENCODER_A = 7;
