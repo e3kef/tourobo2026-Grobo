@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="ページ-1" id="iU3d9pDwjOwahh7N6tyW">
-    <mxGraphModel dx="240" dy="379" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1339" dy="904" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -348,6 +348,24 @@
         </mxCell>
         <mxCell id="o4J3NV7O9YnokUKxXt7o-51" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;ESP32 DevKit②(取得/昇降)&lt;/h1&gt;&lt;ul&gt;&lt;li&gt;main.cpp&lt;/li&gt;&lt;ul&gt;&lt;li&gt;CAN.h, CAN_Protocol.hインクルード&lt;/li&gt;&lt;li&gt;モード受信&lt;/li&gt;&lt;li&gt;(テストモードの場合のみ)パラメータ送信&lt;/li&gt;&lt;li&gt;ポテンショメータパラメータ取得&lt;/li&gt;&lt;li&gt;各機構PID制御&lt;/li&gt;&lt;li&gt;取得機構PWM出力&lt;/li&gt;&lt;li&gt;昇降機構PWM出力&lt;/li&gt;&lt;li&gt;開閉機構信号出力&lt;/li&gt;&lt;/ul&gt;&lt;/ul&gt;&lt;ul&gt;&lt;li&gt;params.cpp/params.h&lt;/li&gt;&lt;ul&gt;&lt;li&gt;パラメータ定義&lt;/li&gt;&lt;/ul&gt;&lt;/ul&gt;" vertex="1">
           <mxGeometry height="243" width="410" x="69.01" y="4360" as="geometry" />
+        </mxCell>
+        <mxCell id="IxO27o2HeWU00ItJne8N-1" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;strokeColor=#FF3333;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="360" y="2780" as="sourcePoint" />
+            <mxPoint x="250" y="2590" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="IxO27o2HeWU00ItJne8N-2" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;strokeColor=#FF3333;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="470" y="2780" as="sourcePoint" />
+            <mxPoint x="580" y="2590" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="IxO27o2HeWU00ItJne8N-3" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=#FF3333;fontStyle=1" value="&lt;div&gt;射出目標値設定&lt;/div&gt;&lt;div&gt;(ローラー大:射出モーター1)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="30" width="170" x="170" y="2550" as="geometry" />
+        </mxCell>
+        <mxCell id="IxO27o2HeWU00ItJne8N-4" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=#FF3333;fontStyle=1" value="&lt;div&gt;射出目標値設定&lt;/div&gt;&lt;div&gt;(ローラー小:射出モーター2)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="30" width="170" x="490" y="2550" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
