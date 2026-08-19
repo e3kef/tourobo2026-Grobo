@@ -44,7 +44,7 @@ constexpr float PID_OUTPUT_MAX = 1000.0f;
 // =====================
 
 // 仮値
-constexpr float KP = 2.0f;
+constexpr float KP = 0.4f;
 constexpr float KI = 0.0f;
 constexpr float KD = 0.0f;
 
