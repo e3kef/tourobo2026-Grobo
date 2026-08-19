@@ -56,6 +56,39 @@ constexpr uint32_t SHOOT_DURATION_MS = 5000;
 constexpr int SHOOT_SWITCH_ON_THRESHOLD =
     (SBUS_MID + SBUS_MAX) / 2;
 
+// ------------------------------------------------------------
+// 取得・昇降
+// ------------------------------------------------------------
+
+// 3段トグル判定
+constexpr int SWITCH3_UP_THRESHOLD =
+    (SBUS_MIN + SBUS_MID) / 2;
+
+constexpr int SWITCH3_DOWN_THRESHOLD =
+    (SBUS_MID + SBUS_MAX) / 2;
+
+// Position target
+constexpr int16_t POSITION_TARGET_DISABLE = -1;
+
+// GET1
+constexpr int16_t GET1_OPEN_TARGET   = 1590;
+constexpr int16_t GET1_MIDDLE_TARGET = 1839;
+constexpr int16_t GET1_CLOSE_TARGET  = 1936;
+
+// GET2
+constexpr int16_t GET2_OPEN_TARGET   = 2064;
+constexpr int16_t GET2_MIDDLE_TARGET = 1830;
+constexpr int16_t GET2_CLOSE_TARGET  = 1740;
+
+// 昇降
+constexpr int16_t LIFT_GET_TARGET    = 1018;
+constexpr int16_t LIFT_PLATE_TARGET  = 1558;
+constexpr int16_t LIFT_GATE_TARGET   = 2768;
+
+// air
+constexpr int16_t AIR_CLOSE = 0;
+constexpr int16_t AIR_OPEN  = 1;
+
 
 // ============================================================
 // Shared data
@@ -77,16 +110,21 @@ struct ControlInput
     uint16_t raw_shoot_motor2;
     uint16_t raw_shoot_switch;
 
+
+    // 取得・開閉
+    // CH11 = 昇降3段
+    uint16_t raw_lift_switch;
+
+    // CH12 = 取得エアシリ2段
+    uint16_t raw_air_switch;
+
     bool connected;
 };
 
 ControlInput control_input = {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
+    0, 0, 0, 
+    0, 0, 0, 
+    0, 0,
     false
 };
 
@@ -257,6 +295,18 @@ void taskSBus(void *arg)
         uint16_t raw_shoot_switch =
             SBus::getChannel(8);
 
+        // CH11
+        // 昇降
+        // 上 = 取得, 中央 = 皿, 下 = 城門
+        uint16_t raw_lift_switch =
+            SBus::getChannel(10);
+
+        // CH12
+        // 取得エアシリ
+        // 上 = 開, 下 = 閉
+        uint16_t raw_air_switch =
+            SBus::getChannel(11);
+
         // ---------------------
         // S.BUS接続確認
         // ---------------------
@@ -268,7 +318,9 @@ void taskSBus(void *arg)
             isValidSBusValue(raw_r) &&
             isValidSBusValue(raw_shoot_motor1) &&
             isValidSBusValue(raw_shoot_motor2) &&
-            isValidSBusValue(raw_shoot_switch);
+            isValidSBusValue(raw_shoot_switch) &&
+            isValidSBusValue(raw_lift_switch) &&
+            isValidSBusValue(raw_air_switch);
 
         ControlInput input_local = {
             0,
@@ -325,7 +377,17 @@ void taskSBus(void *arg)
                 raw_shoot_switch;
 
             input_local.connected = true;
+
+            // ---------------------
+            // 取得・昇降
+            // ---------------------            
+            input_local.raw_lift_switch =
+                raw_lift_switch;
+
+            input_local.raw_air_switch =
+                raw_air_switch;
         }
+
 
         // ---------------------
         // 共有変数更新
@@ -366,9 +428,9 @@ void taskControl(void *arg)
         xTaskGetTickCount();
 
     // --------------------------------------------------------
-    // 足回りCAN送信用
+    // CAN送信用データフレーム
     // --------------------------------------------------------
-
+    // 足回り
     int16_t drive_target[4] = {
         0,
         0,
@@ -376,12 +438,33 @@ void taskControl(void *arg)
         0
     };
 
-    // --------------------------------------------------------
-    // 射出CAN送信用
-    // --------------------------------------------------------
-
+    // 射出
     int16_t shoot_target[4] = {
         0,
+        0,
+        0,
+        0
+    };
+
+    // 取得
+    int16_t get_target[4] = {
+        POSITION_TARGET_DISABLE,
+        POSITION_TARGET_DISABLE,
+        0,
+        0
+    };
+
+    // 昇降
+    int16_t lift_target[4] = {
+        POSITION_TARGET_DISABLE,
+        0,
+        0,
+        0
+    };
+
+    // エアシリ
+    int16_t air_target[4] = {
+        AIR_CLOSE,
         0,
         0,
         0
@@ -459,7 +542,7 @@ void taskControl(void *arg)
         }
 
         // ====================================================
-        // 射出処理
+        // 射出
         // ====================================================
 
         bool shoot_switch_on = false;
@@ -584,6 +667,143 @@ void taskControl(void *arg)
         shoot_target[3] = 0;
 
         // ====================================================
+        // 取得
+        // ====================================================
+
+        if (input_local.connected)
+        {
+            uint16_t raw =
+                input_local.raw_shoot_switch;
+
+            // CH9 上
+            // 外
+            if (raw <
+                SWITCH3_UP_THRESHOLD)
+            {
+                get_target[0] =
+                    GET1_OPEN_TARGET;
+
+                get_target[1] =
+                    GET2_OPEN_TARGET;
+            }
+
+            // CH9 中央
+            // 中・保持
+            else if (raw <
+                    SWITCH3_DOWN_THRESHOLD)
+            {
+                get_target[0] =
+                    GET1_MIDDLE_TARGET;
+
+                get_target[1] =
+                    GET2_MIDDLE_TARGET;
+            }
+
+            // CH9 下
+            // 内 + 射出
+            else
+            {
+                get_target[0] =
+                    GET1_CLOSE_TARGET;
+
+                get_target[1] =
+                    GET2_CLOSE_TARGET;
+            }
+        }
+        else
+        {
+            get_target[0] =
+                POSITION_TARGET_DISABLE;
+
+            get_target[1] =
+                POSITION_TARGET_DISABLE;
+        }
+
+        get_target[2] = 0;
+        get_target[3] = 0;
+
+
+        // ====================================================
+        // 昇降
+        // ====================================================
+
+        if (input_local.connected)
+        {
+            uint16_t raw =
+                input_local.raw_lift_switch;
+
+            // CH11 上
+            // 取得
+            if (raw <
+                SWITCH3_UP_THRESHOLD)
+            {
+                lift_target[0] =
+                    LIFT_GET_TARGET;
+            }
+
+            // CH11 中央
+            // 皿
+            else if (raw <
+                    SWITCH3_DOWN_THRESHOLD)
+            {
+                lift_target[0] =
+                    LIFT_PLATE_TARGET;
+            }
+
+            // CH11 下
+            // 城門
+            else
+            {
+                lift_target[0] =
+                    LIFT_GATE_TARGET;
+            }
+        }
+        else
+        {
+            lift_target[0] =
+                POSITION_TARGET_DISABLE;
+        }
+
+        lift_target[1] = 0;
+        lift_target[2] = 0;
+        lift_target[3] = 0;
+
+
+        // ====================================================
+        // 取得エアシリ
+        // ====================================================
+
+        if (input_local.connected)
+        {
+            // CH12
+            //
+            // 上 ≈ 326 → OPEN
+            // 下 ≈1659 → CLOSE
+
+            if (input_local.raw_air_switch <
+                SBUS_MID)
+            {
+                air_target[0] =
+                    AIR_OPEN;
+            }
+            else
+            {
+                air_target[0] =
+                    AIR_CLOSE;
+            }
+        }
+        else
+        {
+            // 通信断時は閉
+            air_target[0] =
+                AIR_CLOSE;
+        }
+
+        air_target[1] = 0;
+        air_target[2] = 0;
+        air_target[3] = 0;
+
+        // ====================================================
         // CAN送信
         // ====================================================
 
@@ -606,6 +826,29 @@ void taskControl(void *arg)
                 CAN_ID_SHOOT_TARGET,
                 shoot_target
             );
+
+        // 取得
+        bool get_send_ok =
+            CAN_send(
+                CAN_ID_GET_TARGET,
+                get_target
+            );
+
+        // 昇降
+        bool lift_send_ok =
+            CAN_send(
+                CAN_ID_LIFT_TARGET,
+                lift_target
+            );
+
+        // エアシリ
+        bool air_send_ok =
+            CAN_send(
+                CAN_ID_GET_AIR_TARGET,
+                air_target
+            );
+
+
 
         // ====================================================
         // Debug
