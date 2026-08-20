@@ -55,7 +55,7 @@ constexpr int LIFT_PWM_CHANNEL = 2;
 
 // 10bit
 // 0 ～ 1023
-constexpr int PWM_DUTY_LIMIT = 512;
+constexpr int PWM_DUTY_LIMIT = 210;
 
 constexpr float PID_OUTPUT_MAX = 1000.0f;
 
@@ -64,7 +64,7 @@ constexpr float PID_OUTPUT_MAX = 1000.0f;
 // ============================================================
 
 constexpr int GET1_MOTOR_SIGN = +1;
-constexpr int GET2_MOTOR_SIGN = -1;
+constexpr int GET2_MOTOR_SIGN = +1;
 constexpr int LIFT_MOTOR_SIGN = -1;
 
 // ============================================================
@@ -89,22 +89,22 @@ constexpr int16_t POSITION_TARGET_DISABLE = -1;
 // GET HARD LIMIT
 // ============================================================
 
-constexpr int GET1_OPEN_LIMIT  = 1616;
-constexpr int GET1_CLOSE_LIMIT = 2086;
+constexpr int GET1_OPEN_LIMIT  = 2052;
+constexpr int GET1_CLOSE_LIMIT = 2522;
 
-constexpr int GET2_OPEN_LIMIT  = 2174;
-constexpr int GET2_CLOSE_LIMIT = 1686;
+constexpr int GET2_OPEN_LIMIT  = 2536;
+constexpr int GET2_CLOSE_LIMIT = 1982;
 
 // ============================================================
 // PID gain
 // ============================================================
 
 constexpr float GET1_KP = 1.0f;
-constexpr float GET1_KI = 0.5f;
+constexpr float GET1_KI = 0.2f;
 constexpr float GET1_KD = 0.0f;
 
 constexpr float GET2_KP = 1.0f;
-constexpr float GET2_KI = 0.5f;
+constexpr float GET2_KI = 0.2f;
 constexpr float GET2_KD = 0.0f;
 
 constexpr float LIFT_KP = 0.5f;
@@ -226,6 +226,23 @@ bool isPotLimitBlocking(
 
 void setup()
 {
+    pinMode(GET1_PWM_PIN, OUTPUT);
+    pinMode(GET1_DIR_PIN, OUTPUT);
+
+    pinMode(GET2_PWM_PIN, OUTPUT);
+    pinMode(GET2_DIR_PIN, OUTPUT);
+
+    pinMode(LIFT_PWM_PIN, OUTPUT);
+    pinMode(LIFT_DIR_PIN, OUTPUT);
+
+    digitalWrite(GET1_PWM_PIN, LOW);
+    digitalWrite(GET2_PWM_PIN, LOW);
+    digitalWrite(LIFT_PWM_PIN, LOW);
+
+    digitalWrite(GET1_DIR_PIN, LOW);
+    digitalWrite(GET2_DIR_PIN, LOW);
+    digitalWrite(LIFT_DIR_PIN, LOW);
+
     Serial.begin(115200);
 
     // ========================================================
