@@ -33,13 +33,13 @@ constexpr int GET2_PWM_PIN = 26;
 constexpr int GET2_DIR_PIN = 25;
 
 // LIFT
-constexpr int LIFT_PWM_PIN = 0;
-constexpr int LIFT_DIR_PIN = 4;
+constexpr int LIFT_PWM_PIN = 4;
+constexpr int LIFT_DIR_PIN = 18;
 
 // ============================================================
 // Air cylinder
 // ============================================================
-constexpr int AIR_PIN = 13;
+constexpr int AIR_PIN = 16;
 constexpr uint8_t AIR_OPEN_LEVEL = HIGH;
 
 // ============================================================
@@ -55,7 +55,7 @@ constexpr int LIFT_PWM_CHANNEL = 2;
 
 // 10bit
 // 0 ～ 1023
-constexpr int PWM_DUTY_LIMIT = 102;
+constexpr int PWM_DUTY_LIMIT = 205;
 
 constexpr float PID_OUTPUT_MAX = 1000.0f;
 
@@ -63,9 +63,9 @@ constexpr float PID_OUTPUT_MAX = 1000.0f;
 // Motor direction
 // ============================================================
 
-constexpr int GET1_MOTOR_SIGN = +1;
+constexpr int GET1_MOTOR_SIGN = -1;
 constexpr int GET2_MOTOR_SIGN = -1;
-constexpr int LIFT_MOTOR_SIGN = +1;
+constexpr int LIFT_MOTOR_SIGN = -1;
 
 // ============================================================
 // Control
@@ -1164,16 +1164,23 @@ void setMotorPWM(
     // PID -> PWM duty
     // --------------------------------------------------------
 
-    int duty =
-        static_cast<int>(
-            output /
-            PID_OUTPUT_MAX *
-            PWM_DUTY_LIMIT
-        );
+    // int duty =
+    //     static_cast<int>(
+    //         output /
+    //         PID_OUTPUT_MAX *
+    //         PWM_DUTY_LIMIT
+    //     );
 
-    duty =
+    // duty =
+    //     constrain(
+    //         duty,
+    //         0,
+    //         PWM_DUTY_LIMIT
+    //     );
+
+    int duty =
         constrain(
-            duty,
+            static_cast<int>(output),
             0,
             PWM_DUTY_LIMIT
         );
