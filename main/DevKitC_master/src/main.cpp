@@ -71,14 +71,14 @@ constexpr int SWITCH3_DOWN_THRESHOLD =
 constexpr int16_t POSITION_TARGET_DISABLE = -1;
 
 // GET1
-constexpr int16_t GET1_OPEN_TARGET   = 3312;
-constexpr int16_t GET1_MIDDLE_TARGET = 3576;
-constexpr int16_t GET1_CLOSE_TARGET  = 3740;
+constexpr int16_t GET1_OPEN_TARGET   = 1802;
+constexpr int16_t GET1_MIDDLE_TARGET = 1968;
+constexpr int16_t GET1_CLOSE_TARGET  = 2076;
 
 // GET2
-constexpr int16_t GET2_OPEN_TARGET   = 2000;
-constexpr int16_t GET2_MIDDLE_TARGET = 1830;
-constexpr int16_t GET2_CLOSE_TARGET  = 1730;
+constexpr int16_t GET2_OPEN_TARGET   = 1968;
+constexpr int16_t GET2_MIDDLE_TARGET = 1788;
+constexpr int16_t GET2_CLOSE_TARGET  = 1696;
 
 // 昇降
 constexpr int16_t LIFT_GET_TARGET    = 1058;

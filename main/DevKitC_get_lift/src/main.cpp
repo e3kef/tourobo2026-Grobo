@@ -55,7 +55,7 @@ constexpr int LIFT_PWM_CHANNEL = 2;
 
 // 10bit
 // 0 ～ 1023
-constexpr int PWM_DUTY_LIMIT = 205;
+constexpr int PWM_DUTY_LIMIT = 512;
 
 constexpr float PID_OUTPUT_MAX = 1000.0f;
 
@@ -63,7 +63,7 @@ constexpr float PID_OUTPUT_MAX = 1000.0f;
 // Motor direction
 // ============================================================
 
-constexpr int GET1_MOTOR_SIGN = -1;
+constexpr int GET1_MOTOR_SIGN = +1;
 constexpr int GET2_MOTOR_SIGN = -1;
 constexpr int LIFT_MOTOR_SIGN = -1;
 
@@ -89,19 +89,23 @@ constexpr int16_t POSITION_TARGET_DISABLE = -1;
 // GET HARD LIMIT
 // ============================================================
 
-constexpr int GET1_OPEN_LIMIT  = 3050;
-constexpr int GET1_CLOSE_LIMIT = 3800;
+constexpr int GET1_OPEN_LIMIT  = 1616;
+constexpr int GET1_CLOSE_LIMIT = 2086;
 
-constexpr int GET2_OPEN_LIMIT  = 2220;
-constexpr int GET2_CLOSE_LIMIT = 1430;
+constexpr int GET2_OPEN_LIMIT  = 2174;
+constexpr int GET2_CLOSE_LIMIT = 1686;
 
 // ============================================================
 // PID gain
 // ============================================================
 
-constexpr float GET_KP = 0.5f;
-constexpr float GET_KI = 0.0f;
-constexpr float GET_KD = 0.0f;
+constexpr float GET1_KP = 1.0f;
+constexpr float GET1_KI = 0.5f;
+constexpr float GET1_KD = 0.0f;
+
+constexpr float GET2_KP = 1.0f;
+constexpr float GET2_KI = 0.5f;
+constexpr float GET2_KD = 0.0f;
 
 constexpr float LIFT_KP = 0.5f;
 constexpr float LIFT_KI = 0.0f;
@@ -154,15 +158,15 @@ portMUX_TYPE state_mux =
 // ============================================================
 
 PIDController get1_pid(
-    GET_KP,
-    GET_KI,
-    GET_KD
+    GET1_KP,
+    GET1_KI,
+    GET1_KD
 );
 
 PIDController get2_pid(
-    GET_KP,
-    GET_KI,
-    GET_KD
+    GET2_KP,
+    GET2_KI,
+    GET2_KD
 );
 
 PIDController lift_pid(
@@ -340,18 +344,13 @@ void setup()
     // ========================================================
 
     get1_pid.setOutputLimits(
-        -PID_OUTPUT_MAX,
-        PID_OUTPUT_MAX
+        -PWM_DUTY_LIMIT,
+        PWM_DUTY_LIMIT
     );
 
     get2_pid.setOutputLimits(
-        -PID_OUTPUT_MAX,
-        PID_OUTPUT_MAX
-    );
-
-    lift_pid.setOutputLimits(
-        -PID_OUTPUT_MAX,
-        PID_OUTPUT_MAX
+        -PWM_DUTY_LIMIT,
+        PWM_DUTY_LIMIT
     );
 
     // ========================================================
