@@ -3,8 +3,8 @@
 // ========================================
 // Potentiometer pins
 // ========================================
-constexpr int POT_GET_1_PIN = 12;
-constexpr int POT_GET_2_PIN = 26;
+constexpr int POT_GET_1_PIN = 32;
+constexpr int POT_GET_2_PIN = 33;
 constexpr int POT_LIFT_PIN  = 35;
 
 // 出力周期

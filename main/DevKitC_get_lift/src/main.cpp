@@ -17,20 +17,20 @@ constexpr int CAN_RX = 22;
 // ============================================================
 // Potentiometer
 // ============================================================
-constexpr int POT_GET1_PIN = 12;
-constexpr int POT_GET2_PIN = 26;
+constexpr int POT_GET1_PIN = 32;
+constexpr int POT_GET2_PIN = 33;
 constexpr int POT_LIFT_PIN = 35;
 
 // ============================================================
 // Motor pins
 // ============================================================
 // GET1
-constexpr int GET1_PWM_PIN = 15;
-constexpr int GET1_DIR_PIN = 2;
+constexpr int GET1_PWM_PIN = 14;
+constexpr int GET1_DIR_PIN = 13;
 
 // GET2
-constexpr int GET2_PWM_PIN = 5;
-constexpr int GET2_DIR_PIN = 18;
+constexpr int GET2_PWM_PIN = 26;
+constexpr int GET2_DIR_PIN = 25;
 
 // LIFT
 constexpr int LIFT_PWM_PIN = 0;
@@ -63,8 +63,8 @@ constexpr float PID_OUTPUT_MAX = 1000.0f;
 // Motor direction
 // ============================================================
 
-constexpr int GET1_MOTOR_SIGN = -1;
-constexpr int GET2_MOTOR_SIGN = +1;
+constexpr int GET1_MOTOR_SIGN = +1;
+constexpr int GET2_MOTOR_SIGN = -1;
 constexpr int LIFT_MOTOR_SIGN = +1;
 
 // ============================================================
@@ -89,11 +89,11 @@ constexpr int16_t POSITION_TARGET_DISABLE = -1;
 // GET HARD LIMIT
 // ============================================================
 
-constexpr int GET1_OPEN_LIMIT  = 1480;
-constexpr int GET1_CLOSE_LIMIT = 1960;
+constexpr int GET1_OPEN_LIMIT  = 3050;
+constexpr int GET1_CLOSE_LIMIT = 3800;
 
 constexpr int GET2_OPEN_LIMIT  = 2220;
-constexpr int GET2_CLOSE_LIMIT = 1725;
+constexpr int GET2_CLOSE_LIMIT = 1430;
 
 // ============================================================
 // PID gain
