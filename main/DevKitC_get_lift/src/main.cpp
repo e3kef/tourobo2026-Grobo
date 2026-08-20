@@ -55,9 +55,6 @@ constexpr int LIFT_PWM_CHANNEL = 2;
 
 // 10bit
 // 0 ～ 1023
-//
-// 24V電源で12Vモータ
-// → 50%に制限
 constexpr int PWM_DUTY_LIMIT = 102;
 
 constexpr float PID_OUTPUT_MAX = 1000.0f;
@@ -66,7 +63,7 @@ constexpr float PID_OUTPUT_MAX = 1000.0f;
 // Motor direction
 // ============================================================
 
-constexpr int GET1_MOTOR_SIGN = +1;
+constexpr int GET1_MOTOR_SIGN = -1;
 constexpr int GET2_MOTOR_SIGN = +1;
 constexpr int LIFT_MOTOR_SIGN = +1;
 
@@ -93,10 +90,10 @@ constexpr int16_t POSITION_TARGET_DISABLE = -1;
 // ============================================================
 
 constexpr int GET1_OPEN_LIMIT  = 1480;
-constexpr int GET1_CLOSE_LIMIT = 1936;
+constexpr int GET1_CLOSE_LIMIT = 1960;
 
 constexpr int GET2_OPEN_LIMIT  = 2220;
-constexpr int GET2_CLOSE_LIMIT = 1740;
+constexpr int GET2_CLOSE_LIMIT = 1725;
 
 // ============================================================
 // PID gain
