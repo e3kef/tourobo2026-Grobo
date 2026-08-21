@@ -76,7 +76,7 @@ constexpr int16_t GET1_MIDDLE_TARGET = 2122;
 constexpr int16_t GET1_CLOSE_TARGET  = 2228;
 
 // GET2
-constexpr int16_t GET2_OPEN_TARGET   = 2504;
+constexpr int16_t GET2_OPEN_TARGET   = 2314;
 constexpr int16_t GET2_MIDDLE_TARGET = 2138;
 constexpr int16_t GET2_CLOSE_TARGET  = 2014;
 

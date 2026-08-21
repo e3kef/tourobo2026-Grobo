@@ -66,7 +66,7 @@ constexpr int PWM_DUTY_LIMIT = 512;
 
 constexpr int GET1_MOTOR_SIGN = -1;
 constexpr int GET2_MOTOR_SIGN = -1;
-constexpr int LIFT_MOTOR_SIGN = -1;
+constexpr int LIFT_MOTOR_SIGN = +1;
 
 // ============================================================
 // Control
@@ -79,8 +79,8 @@ constexpr uint32_t CAN_TIMEOUT_MS = 100;
 constexpr int ADC_AVG_COUNT = 4;
 
 // 目標位置±この範囲で停止
-constexpr int GET_POSITION_TOLERANCE = 10;
-constexpr int LIFT_POSITION_TOLERANCE = 10;
+constexpr int GET_POSITION_TOLERANCE = 3;
+constexpr int LIFT_POSITION_TOLERANCE = 3;
 
 // -1 = 制御無効
 constexpr int16_t POSITION_TARGET_DISABLE = -1;
@@ -387,6 +387,17 @@ void taskControl(void *arg)
 
     uint32_t last_print_ms = 0;
 
+    // LIFT到達ラッチ
+    int16_t last_lift_target = POSITION_TARGET_DISABLE;
+    bool lift_target_reached = false;
+
+    // GET到達ラッチ
+    int16_t last_get1_target = POSITION_TARGET_DISABLE;
+    int16_t last_get2_target = POSITION_TARGET_DISABLE;
+
+    bool get1_target_reached = false;
+    bool get2_target_reached = false;
+
     while (true)
     {
         // ====================================================
@@ -461,11 +472,24 @@ void taskControl(void *arg)
 
         int get1_output = 0;
 
+        // 新しい有効ターゲットが来たら再アーム
+        if (local.get1_target >= 0 &&
+            local.get1_target != last_get1_target)
+        {
+            last_get1_target = local.get1_target;
+            get1_target_reached = false;
+        }
+
         if (local.system_stop ||
             get_timeout ||
             local.get1_target <
                 0)
         {
+            get1_output = 0;
+        }
+        else if (get1_target_reached)
+        {
+            // 一度到達したら次のターゲット変更まで停止
             get1_output = 0;
         }
         else
@@ -498,6 +522,7 @@ void taskControl(void *arg)
                 if (abs(error) <=
                     GET_POSITION_TOLERANCE)
                 {
+                    get1_target_reached = true;
                     get1_output = 0;
                 }
                 else
@@ -558,12 +583,25 @@ void taskControl(void *arg)
 
         int get2_output = 0;
 
+        // 新しい有効ターゲットが来たら再アーム
+        if (local.get2_target >= 0 &&
+            local.get2_target != last_get2_target)
+        {
+            last_get2_target = local.get2_target;
+            get2_target_reached = false;
+        }
+
         if (local.system_stop ||
             get_timeout ||
             local.get2_target <
                 0)
         {
             get2_output = 0;
+        }
+        else if (get1_target_reached)
+        {
+            // 一度到達したら次のターゲット変更まで停止
+            get1_output = 0;
         }
         else
         {
@@ -586,6 +624,7 @@ void taskControl(void *arg)
                 if (abs(error) <=
                     GET_POSITION_TOLERANCE)
                 {
+                    get2_target_reached = true;
                     get2_output = 0;
                 }
                 else
@@ -631,11 +670,25 @@ void taskControl(void *arg)
         // dir 0: LOW, 1: HIGH;
         int lift_dir = LIFT_MOTOR_SIGN;
 
+                if (local.lift_target != last_lift_target)
+        {
+            last_lift_target =
+                local.lift_target;
+
+            lift_target_reached =
+                false;
+        }
+
         if (local.system_stop ||
             lift_timeout ||
             local.lift_target <
                 0)
         {
+            lift_output = 0;
+        }
+        else if (lift_target_reached)
+        {
+            // 一度到達したら次の目標値が来るまで停止
             lift_output = 0;
         }
         else
@@ -647,25 +700,32 @@ void taskControl(void *arg)
             if (abs(error) <=
                 LIFT_POSITION_TOLERANCE)
             {
+                // 目標範囲に一度入った時点でラッチ
+                lift_target_reached =
+                    true;
+
                 lift_output = 0;
             }
             else
             {
                 if (error > 0)
                 {
-                    lift_dir = LIFT_MOTOR_SIGN;
+                    lift_dir =
+                        LIFT_MOTOR_SIGN;
+
                     lift_output =
                         PWM_DUTY_LIMIT;
                 }
                 else
                 {
-                    lift_dir = -(LIFT_MOTOR_SIGN);
+                    lift_dir =
+                        -(LIFT_MOTOR_SIGN);
+
                     lift_output =
                         PWM_DUTY_LIMIT;
                 }
             }
         }
-
         setMotorPWM(
             LIFT_PWM_CHANNEL,
             LIFT_DIR_PIN,
