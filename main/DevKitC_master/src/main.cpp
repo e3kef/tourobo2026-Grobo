@@ -71,14 +71,14 @@ constexpr int SWITCH3_DOWN_THRESHOLD =
 constexpr int16_t POSITION_TARGET_DISABLE = -1;
 
 // GET1
-constexpr int16_t GET1_OPEN_TARGET   = 1802;
-constexpr int16_t GET1_MIDDLE_TARGET = 1968;
-constexpr int16_t GET1_CLOSE_TARGET  = 2076;
+constexpr int16_t GET1_OPEN_TARGET   = 2570;
+constexpr int16_t GET1_MIDDLE_TARGET = 2670;
+constexpr int16_t GET1_CLOSE_TARGET  = 2670;
 
 // GET2
-constexpr int16_t GET2_OPEN_TARGET   = 1968;
-constexpr int16_t GET2_MIDDLE_TARGET = 1788;
-constexpr int16_t GET2_CLOSE_TARGET  = 1696;
+constexpr int16_t GET2_OPEN_TARGET   = 1948;
+constexpr int16_t GET2_MIDDLE_TARGET = 1848;
+constexpr int16_t GET2_CLOSE_TARGET  = 1848;
 
 // 昇降
 constexpr int16_t LIFT_GET_TARGET    = 1058;
@@ -448,15 +448,15 @@ void taskControl(void *arg)
 
     // 取得
     int16_t get_target[4] = {
-        POSITION_TARGET_DISABLE,
-        POSITION_TARGET_DISABLE,
+        GET1_OPEN_TARGET,
+        GET2_OPEN_TARGET,
         0,
         0
     };
 
     // 昇降
     int16_t lift_target[4] = {
-        POSITION_TARGET_DISABLE,
+        LIFT_GET_TARGET,
         0,
         0,
         0
