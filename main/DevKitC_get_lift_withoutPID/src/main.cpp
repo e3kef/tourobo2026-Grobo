@@ -66,7 +66,7 @@ constexpr int PWM_DUTY_LIMIT = 512;
 
 constexpr int GET1_MOTOR_SIGN = -1;
 constexpr int GET2_MOTOR_SIGN = -1;
-constexpr int LIFT_MOTOR_SIGN = +1;
+constexpr int LIFT_MOTOR_SIGN = -1;
 
 // ============================================================
 // Control
@@ -89,11 +89,11 @@ constexpr int16_t POSITION_TARGET_DISABLE = -1;
 // GET HARD LIMIT
 // ============================================================
 
-constexpr int GET1_OPEN_LIMIT  = 1968;
-constexpr int GET1_CLOSE_LIMIT = 2470;
+constexpr int GET1_OPEN_LIMIT  = 1744;
+constexpr int GET1_CLOSE_LIMIT = 2702;
 
-constexpr int GET2_OPEN_LIMIT  = 2552;
-constexpr int GET2_CLOSE_LIMIT = 2066;
+constexpr int GET2_OPEN_LIMIT  = 2504;
+constexpr int GET2_CLOSE_LIMIT = 1984;
 
 // ============================================================
 // Shared state
@@ -628,6 +628,8 @@ void taskControl(void *arg)
         // ====================================================
 
         int lift_output = 0;
+        // dir 0: LOW, 1: HIGH;
+        int lift_dir = LIFT_MOTOR_SIGN;
 
         if (local.system_stop ||
             lift_timeout ||
@@ -651,13 +653,15 @@ void taskControl(void *arg)
             {
                 if (error > 0)
                 {
+                    lift_dir = LIFT_MOTOR_SIGN;
                     lift_output =
                         PWM_DUTY_LIMIT;
                 }
                 else
                 {
+                    lift_dir = -(LIFT_MOTOR_SIGN);
                     lift_output =
-                        -PWM_DUTY_LIMIT;
+                        PWM_DUTY_LIMIT;
                 }
             }
         }
@@ -666,7 +670,7 @@ void taskControl(void *arg)
             LIFT_PWM_CHANNEL,
             LIFT_DIR_PIN,
             lift_output,
-            LIFT_MOTOR_SIGN
+            lift_dir
         );
 
         // ====================================================

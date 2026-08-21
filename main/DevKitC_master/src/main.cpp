@@ -71,19 +71,19 @@ constexpr int SWITCH3_DOWN_THRESHOLD =
 constexpr int16_t POSITION_TARGET_DISABLE = -1;
 
 // GET1
-constexpr int16_t GET1_OPEN_TARGET   = 2570;
-constexpr int16_t GET1_MIDDLE_TARGET = 2670;
-constexpr int16_t GET1_CLOSE_TARGET  = 2670;
+constexpr int16_t GET1_OPEN_TARGET   = 1914;
+constexpr int16_t GET1_MIDDLE_TARGET = 2122;
+constexpr int16_t GET1_CLOSE_TARGET  = 2228;
 
 // GET2
-constexpr int16_t GET2_OPEN_TARGET   = 1948;
-constexpr int16_t GET2_MIDDLE_TARGET = 1848;
-constexpr int16_t GET2_CLOSE_TARGET  = 1848;
+constexpr int16_t GET2_OPEN_TARGET   = 2504;
+constexpr int16_t GET2_MIDDLE_TARGET = 2138;
+constexpr int16_t GET2_CLOSE_TARGET  = 2014;
 
 // 昇降
-constexpr int16_t LIFT_GET_TARGET    = 1058;
-constexpr int16_t LIFT_PLATE_TARGET  = 1510;
-constexpr int16_t LIFT_GATE_TARGET   = 2842;
+constexpr int16_t LIFT_GET_TARGET    = 1062;
+constexpr int16_t LIFT_PLATE_TARGET  = 1474;
+constexpr int16_t LIFT_GATE_TARGET   = 2672;
 
 // air
 constexpr int16_t AIR_CLOSE = 0;
@@ -456,7 +456,7 @@ void taskControl(void *arg)
 
     // 昇降
     int16_t lift_target[4] = {
-        LIFT_GET_TARGET,
+        LIFT_PLATE_TARGET,
         0,
         0,
         0
