@@ -18,7 +18,7 @@ constexpr int CAN_RX = 22;
 // Potentiometer
 // ============================================================
 
-constexpr int POT_GET1_PIN = 32;
+constexpr int POT_GET1_PIN = 34;
 constexpr int POT_GET2_PIN = 33;
 constexpr int POT_LIFT_PIN = 35;
 
@@ -89,11 +89,11 @@ constexpr int16_t POSITION_TARGET_DISABLE = -1;
 // GET HARD LIMIT
 // ============================================================
 
-constexpr int GET1_OPEN_LIMIT  = 1744;
-constexpr int GET1_CLOSE_LIMIT = 2702;
+constexpr int GET1_OPEN_LIMIT  = 1708;
+constexpr int GET1_CLOSE_LIMIT = 2293;
 
-constexpr int GET2_OPEN_LIMIT  = 2504;
-constexpr int GET2_CLOSE_LIMIT = 1984;
+constexpr int GET2_OPEN_LIMIT  = 2482;
+constexpr int GET2_CLOSE_LIMIT = 1901;
 
 // ============================================================
 // Shared state
@@ -471,6 +471,7 @@ void taskControl(void *arg)
             false;
 
         int get1_output = 0;
+        int get1_dir = GET1_MOTOR_SIGN;
 
         // 新しい有効ターゲットが来たら再アーム
         if (local.get1_target >= 0 &&
@@ -536,13 +537,13 @@ void taskControl(void *arg)
 
                     if (error > 0)
                     {
-                        get1_output =
-                            PWM_DUTY_LIMIT;
+                        get1_output = PWM_DUTY_LIMIT - 200;
+                        get1_dir = GET1_MOTOR_SIGN;
                     }
                     else
                     {
-                        get1_output =
-                            -PWM_DUTY_LIMIT;
+                        get1_output = PWM_DUTY_LIMIT - 200;
+                        get1_dir = -GET1_MOTOR_SIGN;
                     }
 
                     // ----------------------------------------
@@ -568,7 +569,7 @@ void taskControl(void *arg)
             GET1_PWM_CHANNEL,
             GET1_DIR_PIN,
             get1_output,
-            GET1_MOTOR_SIGN
+            get1_dir
         );
 
         // ====================================================
@@ -582,6 +583,7 @@ void taskControl(void *arg)
             false;
 
         int get2_output = 0;
+        int get2_dir = GET2_MOTOR_SIGN;
 
         // 新しい有効ターゲットが来たら再アーム
         if (local.get2_target >= 0 &&
@@ -631,13 +633,13 @@ void taskControl(void *arg)
                 {
                     if (error > 0)
                     {
-                        get2_output =
-                            PWM_DUTY_LIMIT;
+                        get2_output = PWM_DUTY_LIMIT - 200;
+                        get2_dir = GET2_MOTOR_SIGN;
                     }
                     else
                     {
-                        get2_output =
-                            -PWM_DUTY_LIMIT;
+                        get2_output = PWM_DUTY_LIMIT - 200;
+                        get2_dir = -GET2_MOTOR_SIGN;
                     }
 
                     if (isPotLimitBlocking(
@@ -659,7 +661,7 @@ void taskControl(void *arg)
             GET2_PWM_CHANNEL,
             GET2_DIR_PIN,
             get2_output,
-            GET2_MOTOR_SIGN
+            get2_dir
         );
 
         // ====================================================
