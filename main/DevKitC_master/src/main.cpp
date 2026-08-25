@@ -36,12 +36,20 @@ constexpr int16_t DRIVE_MAX_RPM = 265;
 // 射出
 // ------------------------------------------------------------
 
-// 射出モーター最大目標RPM
-//
+
+// 射出モーター最大目標周速度
+// MOTOR1:
+//   1.5 * PI * 1695 ≒ 7987
+// MOTOR2:
+//   (14 / 15) * PI * 2290 ≒ 6715
+// 射出モーター最大目標周速度
 // CH6 / CH8 のダイヤル位置を
-// 0 ～ 100 % として、この値までのRPMに変換
-constexpr int16_t SHOOT_MOTOR1_MAX_RPM = 1695;
-constexpr int16_t SHOOT_MOTOR2_MAX_RPM = 2290;
+// 0 ～ 100 % として、この値までの周速度に変換
+// 単位 mm/s
+// 
+// テスト：50%
+constexpr int16_t SHOOT_MOTOR1_MAX_SURFACE_SPEED = 12206 / 2;
+constexpr int16_t SHOOT_MOTOR2_MAX_SURFACE_SPEED = 12608 / 2;
 
 // 射出最大動作時間
 constexpr uint32_t SHOOT_DURATION_MS = 5000;
@@ -162,7 +170,7 @@ bool isShootSwitchOn(
 
 int16_t dialToRPM(
     uint16_t raw,
-    int16_t max_rpm
+    int16_t max_speed
 );
 
 
@@ -488,9 +496,9 @@ void taskControl(void *arg)
     // 射出開始時刻
     uint32_t shoot_start_ms = 0;
 
-    // 射出開始時に一度だけ取得して保持するRPM
-    int16_t latched_shoot_rpm_1 = 0;
-    int16_t latched_shoot_rpm_2 = 0;
+    // 射出開始時に一度だけ取得して保持する周速度
+    int16_t latched_shoot_speed_1 = 0;
+    int16_t latched_shoot_speed_2 = 0;
 
     // Debug
     uint32_t last_print_ms = 0;
@@ -568,8 +576,8 @@ void taskControl(void *arg)
             // 勝手に再射出しないようdisarm
             shoot_armed = false;
 
-            latched_shoot_rpm_1 = 0;
-            latched_shoot_rpm_2 = 0;
+            latched_shoot_speed_1 = 0;
+            latched_shoot_speed_2 = 0;
         }
 
         // ----------------------------------------------------
@@ -584,8 +592,8 @@ void taskControl(void *arg)
             // 次回の射出を許可
             shoot_armed = true;
 
-            latched_shoot_rpm_1 = 0;
-            latched_shoot_rpm_2 = 0;
+            latched_shoot_speed_1 = 0;
+            latched_shoot_speed_2 = 0;
         }
 
         // ----------------------------------------------------
@@ -615,16 +623,16 @@ void taskControl(void *arg)
                 // 今回の射出中は値を固定する
                 // -------------------------------------------
 
-                latched_shoot_rpm_1 =
+                latched_shoot_speed_1 =
                     dialToRPM(
                         input_local.raw_shoot_motor1,
-                        SHOOT_MOTOR1_MAX_RPM
+                        SHOOT_MOTOR1_MAX_SURFACE_SPEED
                     );
 
-                latched_shoot_rpm_2 =
+                latched_shoot_speed_2 =
                     dialToRPM(
                         input_local.raw_shoot_motor2,
-                        SHOOT_MOTOR2_MAX_RPM
+                        SHOOT_MOTOR2_MAX_SURFACE_SPEED
                     );
 
                 shoot_active = true;
@@ -640,8 +648,8 @@ void taskControl(void *arg)
             {
                 shoot_active = false;
 
-                latched_shoot_rpm_1 = 0;
-                latched_shoot_rpm_2 = 0;
+                latched_shoot_speed_1 = 0;
+                latched_shoot_speed_2 = 0;
             }
         }
 
@@ -652,10 +660,10 @@ void taskControl(void *arg)
         if (shoot_active)
         {
             shoot_target[0] =
-                latched_shoot_rpm_1;
+                latched_shoot_speed_1;
 
             shoot_target[1] =
-                latched_shoot_rpm_2;
+                latched_shoot_speed_2;
         }
         else
         {
@@ -1017,7 +1025,7 @@ bool isShootSwitchOn(
 
 int16_t dialToRPM(
     uint16_t raw,
-    int16_t max_rpm
+    int16_t max_speed
 )
 {
     // 実測範囲外をクランプ
@@ -1035,19 +1043,19 @@ int16_t dialToRPM(
     //
     // max_rpm に対する割合として変換
 
-    int32_t rpm =
+    int32_t speed =
         (int32_t)(raw - SBUS_MIN) *
-        max_rpm /
+        max_speed /
         (SBUS_MAX - SBUS_MIN);
 
-    rpm = constrain(
-        rpm,
+    speed = constrain(
+        speed,
         0,
-        max_rpm
+        max_speed
     );
 
     return static_cast<int16_t>(
-        rpm
+        speed
     );
 }
 
