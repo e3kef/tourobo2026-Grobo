@@ -51,9 +51,9 @@ constexpr float SURFACE_SPEED_PER_RPM =
 // =====================
 
 // 仮値
-constexpr float KP = 0.4f / SURFACE_SPEED_PER_RPM;
-constexpr float KI = 0.0f;
-constexpr float KD = 0.0f;
+constexpr float KP = 0.1f;
+constexpr float KI = 3.0f;
+constexpr float KD = 0.0010f;
 
 // =====================
 // Shared variables

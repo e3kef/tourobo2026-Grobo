@@ -51,9 +51,9 @@ constexpr float SURFACE_SPEED_PER_RPM =
 // =====================
 
 // 仮値
-constexpr float KP = 0.4f / SURFACE_SPEED_PER_RPM;
-constexpr float KI = 0.0f;
-constexpr float KD = 0.0f;
+constexpr float KP = 0.15f;
+constexpr float KI = 3.5f;
+constexpr float KD = 0.0005f;
 
 // =====================
 // Shared variables
@@ -255,7 +255,7 @@ void taskControl(void *arg)
         // 停止中でも必ず10msごとに読む
         // Encoder_getRPM()内部でカウントを0へ戻すため
         float current_rpm =
-            Encoder_getRPM(dt);
+            -(Encoder_getRPM(dt));
 
         // RPM -> ローラー周速度
         float current_surface_speed =
@@ -453,7 +453,7 @@ int setMotorPWM(float pwm)
     // ---------------------
 
     digitalWrite(
-        DIR_PIN, LOW
+        DIR_PIN, HIGH
     );
 
     // if (pwm >= 0.0f)
