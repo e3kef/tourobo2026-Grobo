@@ -3,7 +3,6 @@
 #include "driver/gpio.h"
 
 constexpr float CPR = 1024.0f;   // 512 PPR × 2逓倍
-constexpr float DT  = 0.01f;     // 10 ms
 
 constexpr int RPM_AVG_SIZE = 3;  // 移動平均点数
 
@@ -72,13 +71,16 @@ int32_t Encoder_getCount()
 }
 
 
-float Encoder_getRPM()
+float Encoder_getRPM(float dt)
 {
     int32_t count = Encoder_getCount();
 
-    // 今回の10ms区間のRPM
+    if(dt <= 0.0f){
+        return 0.0f;
+    }
+
     float rpm =
-        ((float)count / CPR) * (60.0f / DT);
+        ((float)count / CPR) * (60.0f / dt);
 
 
     // リングバッファへ格納

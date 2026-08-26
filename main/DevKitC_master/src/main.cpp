@@ -48,8 +48,13 @@ constexpr int16_t DRIVE_MAX_RPM = 265;
 // 単位 mm/s
 // 
 // テスト：50%
-constexpr int16_t SHOOT_MOTOR1_MAX_SURFACE_SPEED = 12206 / 2;
-constexpr int16_t SHOOT_MOTOR2_MAX_SURFACE_SPEED = 12608 / 2;
+constexpr int16_t SHOOT_MOTOR1_FULL_SURFACE_SPEED = 12206;
+constexpr int16_t SHOOT_MOTOR2_FULL_SURFACE_SPEED = 12608;
+
+constexpr float SHOOT_TEST_RATIO = 0.5f;
+
+constexpr int16_t SHOOT_MOTOR1_MAX_SURFACE_SPEED = SHOOT_MOTOR1_FULL_SURFACE_SPEED * SHOOT_TEST_RATIO;
+constexpr int16_t SHOOT_MOTOR2_MAX_SURFACE_SPEED = SHOOT_MOTOR2_FULL_SURFACE_SPEED * SHOOT_TEST_RATIO;
 
 // 射出最大動作時間
 constexpr uint32_t SHOOT_DURATION_MS = 5000;
@@ -168,7 +173,7 @@ bool isShootSwitchOn(
     uint16_t raw
 );
 
-int16_t dialToRPM(
+int16_t dialToSurfaceSpeed(
     uint16_t raw,
     int16_t max_speed
 );
@@ -624,13 +629,13 @@ void taskControl(void *arg)
                 // -------------------------------------------
 
                 latched_shoot_speed_1 =
-                    dialToRPM(
+                    dialToSurfaceSpeed(
                         input_local.raw_shoot_motor1,
                         SHOOT_MOTOR1_MAX_SURFACE_SPEED
                     );
 
                 latched_shoot_speed_2 =
-                    dialToRPM(
+                    dialToSurfaceSpeed(
                         input_local.raw_shoot_motor2,
                         SHOOT_MOTOR2_MAX_SURFACE_SPEED
                     );
@@ -1023,7 +1028,7 @@ bool isShootSwitchOn(
 // Shoot dial -> RPM
 // ============================================================
 
-int16_t dialToRPM(
+int16_t dialToSurfaceSpeed(
     uint16_t raw,
     int16_t max_speed
 )
@@ -1041,7 +1046,7 @@ int16_t dialToRPM(
     // 993  -> 約50 %
     // 1659 -> 100 %
     //
-    // max_rpm に対する割合として変換
+    // max_speed に対する割合として変換
 
     int32_t speed =
         (int32_t)(raw - SBUS_MIN) *

@@ -84,7 +84,7 @@ void taskControl(void *arg);
 
 void receiveCAN();
 
-void setMotorPWM(float pwm);
+int setMotorPWM(float pwm);
 
 // =====================
 // Setup
@@ -232,20 +232,6 @@ void taskControl(void *arg)
         portEXIT_CRITICAL(&state_mux);
 
         // ---------------------
-        // Encoder
-        // ---------------------
-
-        // 停止中でも必ず10msごとに読む
-        // Encoder_getRPM()内部でカウントを0へ戻すため
-        float current_rpm =
-            Encoder_getRPM();
-
-        // RPM -> ローラー周速度
-        float current_surface_speed =
-            current_rpm *
-            SURFACE_SPEED_PER_RPM;
-
-        // ---------------------
         // dt
         // ---------------------
 
@@ -256,6 +242,25 @@ void taskControl(void *arg)
             / 1000000.0f;
 
         last_control_us = now_us;
+
+        if(dt <= 0.0f){
+            dt =
+            CONTROL_PERIOD_MS / 1000.0f;
+        }
+
+        // ---------------------
+        // Encoder
+        // ---------------------
+
+        // 停止中でも必ず10msごとに読む
+        // Encoder_getRPM()内部でカウントを0へ戻すため
+        float current_rpm =
+            Encoder_getRPM(dt);
+
+        // RPM -> ローラー周速度
+        float current_surface_speed =
+            current_rpm *
+            SURFACE_SPEED_PER_RPM;
 
         // ---------------------
         // Safety
@@ -302,22 +307,30 @@ void taskControl(void *arg)
             // PWM
             // ---------------------
 
-            setMotorPWM(output);
+            int output_duty = setMotorPWM(output);
 
             // ---------------------
             // Debug
             // ---------------------
 
-            /*
-            Serial.printf(
-                "target:%d targetRPM:%.2f rpm:%.2f out:%.2f dt:%.4f\n",
-                target_local,
-                target_rpm,
-                current_rpm,
-                output,
-                dt
-            );
-            */
+            static uint32_t last_debug_ms = 0;
+            uint32_t now_ms = millis();
+
+            if (now_ms - last_debug_ms >= 100)
+            {
+                last_debug_ms = now_ms;
+
+                Serial.printf(
+                    "target=%.1f, current=%.1f, rpm=%.1f, "
+                    "dt=%.4f, pid=%.1f, duty=%d\n",
+                    target_surface_speed,
+                    current_surface_speed,
+                    current_rpm,
+                    dt,
+                    output,
+                    output_duty
+                );
+            }
         }
 
         // ---------------------
@@ -424,38 +437,42 @@ void receiveCAN()
 // Motor
 // =====================
 
-void setMotorPWM(float pwm)
+int setMotorPWM(float pwm)
 {
     // PID output limit
     if (pwm > PID_OUTPUT_MAX)
     {
         pwm = PID_OUTPUT_MAX;
     }
-    else if (pwm < -PID_OUTPUT_MAX)
+    else if (pwm < 0)
     {
-        pwm = -PID_OUTPUT_MAX;
+        pwm = 0;
     }
 
     // ---------------------
     // Direction
     // ---------------------
 
-    if (pwm >= 0.0f)
-    {
-        digitalWrite(
-            DIR_PIN,
-            HIGH
-        );
-    }
-    else
-    {
-        digitalWrite(
-            DIR_PIN,
-            LOW
-        );
+    digitalWrite(
+        DIR_PIN, LOW
+    );
 
-        pwm = -pwm;
-    }
+    // if (pwm >= 0.0f)
+    // {
+    //     digitalWrite(
+    //         DIR_PIN,
+    //         HIGH
+    //     );
+    // }
+    // else
+    // {
+    //     digitalWrite(
+    //         DIR_PIN,
+    //         LOW
+    //     );
+
+    //     pwm = -pwm;
+    // }
 
     // ---------------------
     // PID output -> duty
@@ -478,5 +495,5 @@ void setMotorPWM(float pwm)
         duty
     );
 
-    Serial.println(duty);
+    return duty;
 }

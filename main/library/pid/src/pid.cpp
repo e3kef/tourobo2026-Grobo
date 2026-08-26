@@ -45,10 +45,12 @@ float PIDController::update(float target, float current, float dt)
     float delta_output;
 
     if (first_update_) {
-        // 初回はD項を使わない
         delta_output =
             kp_ * error +
             ki_ * error * dt;
+
+        // 次回D項で初期値0を使わないため
+        prev_error_ = error;
 
         first_update_ = false;
     }
