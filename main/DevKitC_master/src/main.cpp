@@ -51,8 +51,8 @@ constexpr int16_t DRIVE_MAX_RPM = 265;
 constexpr int16_t SHOOT_MOTOR1_FULL_SURFACE_SPEED = 12206;
 constexpr int16_t SHOOT_MOTOR2_FULL_SURFACE_SPEED = 12608;
 
-constexpr float SHOOT_MOTOR1_OUTPUT_RATIO = 1.0f;
-constexpr float SHOOT_MOTOR2_OUTPUT_RATIO = 1.0f;
+constexpr float SHOOT_MOTOR1_OUTPUT_RATIO = 0.8f;
+constexpr float SHOOT_MOTOR2_OUTPUT_RATIO = 0.8f;
 
 constexpr int16_t SHOOT_MOTOR1_MAX_SURFACE_SPEED = SHOOT_MOTOR1_FULL_SURFACE_SPEED * SHOOT_MOTOR1_OUTPUT_RATIO;
 constexpr int16_t SHOOT_MOTOR2_MAX_SURFACE_SPEED = SHOOT_MOTOR2_FULL_SURFACE_SPEED * SHOOT_MOTOR2_OUTPUT_RATIO;
@@ -85,14 +85,14 @@ constexpr int SWITCH3_DOWN_THRESHOLD =
 constexpr int16_t POSITION_TARGET_DISABLE = -1;
 
 // GET1
-constexpr int16_t GET1_OPEN_TARGET   = 1880;
-constexpr int16_t GET1_MIDDLE_TARGET = 2128;
-constexpr int16_t GET1_CLOSE_TARGET  = 2193;
+constexpr int16_t GET1_OPEN_TARGET   = 2040;
+constexpr int16_t GET1_MIDDLE_TARGET = 2218;
+constexpr int16_t GET1_CLOSE_TARGET  = 2294;
 
 // GET2
-constexpr int16_t GET2_OPEN_TARGET   = 2338;
-constexpr int16_t GET2_MIDDLE_TARGET = 2105;
-constexpr int16_t GET2_CLOSE_TARGET  = 2001;
+constexpr int16_t GET2_OPEN_TARGET   = 2190;
+constexpr int16_t GET2_MIDDLE_TARGET = 2022;
+constexpr int16_t GET2_CLOSE_TARGET  = 1936;
 
 // 昇降
 constexpr int16_t LIFT_GET_TARGET    = 1062;

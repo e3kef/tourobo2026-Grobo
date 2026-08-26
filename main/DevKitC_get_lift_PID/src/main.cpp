@@ -17,35 +17,35 @@ constexpr int CAN_RX = 22;
 // ============================================================
 // Potentiometer
 // ============================================================
-constexpr int POT_GET1_PIN = 32;
-constexpr int POT_GET2_PIN = 33;
-constexpr int POT_LIFT_PIN = 35;
+constexpr int POT_GET1_PIN = 35;
+constexpr int POT_GET2_PIN = 25;
+constexpr int POT_LIFT_PIN = 14;
 
 // ============================================================
 // Motor pins
 // ============================================================
+
 // GET1
-constexpr int GET1_PWM_PIN = 14;
-constexpr int GET1_DIR_PIN = 13;
+constexpr int GET1_PWM_PIN = 33;
+constexpr int GET1_DIR_PIN = 32;
 
 // GET2
-constexpr int GET2_PWM_PIN = 26;
-constexpr int GET2_DIR_PIN = 25;
+constexpr int GET2_PWM_PIN = 18;
+constexpr int GET2_DIR_PIN = 19;
 
 // LIFT
-constexpr int LIFT_PWM_PIN = 4;
-constexpr int LIFT_DIR_PIN = 18;
+constexpr int LIFT_PWM_PIN = 23;
+constexpr int LIFT_DIR_PIN = 4;
 
 // ============================================================
 // Air cylinder
 // ============================================================
-constexpr int AIR_PIN = 16;
+constexpr int AIR_PIN = 13;
 constexpr uint8_t AIR_OPEN_LEVEL = HIGH;
 
 // ============================================================
 // PWM
 // ============================================================
-
 constexpr int PWM_FREQ = 20000;
 constexpr int PWM_RESOLUTION = 10;
 
@@ -53,34 +53,35 @@ constexpr int GET1_PWM_CHANNEL = 0;
 constexpr int GET2_PWM_CHANNEL = 1;
 constexpr int LIFT_PWM_CHANNEL = 2;
 
-// 10bit
+// 10bit PWM
 // 0 ～ 1023
-constexpr int PWM_DUTY_LIMIT = 210;
+constexpr int PWM_DUTY_LIMIT = 512;
 
-constexpr float PID_OUTPUT_MAX = 1000.0f;
+constexpr float GET_PID_OUTPUT_LIMIT =
+    static_cast<float>(PWM_DUTY_LIMIT - 200);
+
+constexpr float LIFT_PID_OUTPUT_LIMIT =
+    static_cast<float>(PWM_DUTY_LIMIT);
 
 // ============================================================
 // Motor direction
 // ============================================================
-
-constexpr int GET1_MOTOR_SIGN = +1;
-constexpr int GET2_MOTOR_SIGN = +1;
-constexpr int LIFT_MOTOR_SIGN = -1;
+constexpr int GET1_MOTOR_SIGN = -1;
+constexpr int GET2_MOTOR_SIGN = -1;
+constexpr int LIFT_MOTOR_SIGN = +1;
 
 // ============================================================
 // Control
 // ============================================================
-
 constexpr uint32_t CONTROL_PERIOD_MS = 10;
-
 constexpr uint32_t CAN_TIMEOUT_MS = 100;
 
 // ADC平均
 constexpr int ADC_AVG_COUNT = 4;
 
 // 目標位置±この範囲で停止
-constexpr int GET_POSITION_TOLERANCE = 10;
-constexpr int LIFT_POSITION_TOLERANCE = 10;
+constexpr int GET_POSITION_TOLERANCE = 3;
+constexpr int LIFT_POSITION_TOLERANCE = 3;
 
 // -1 = 制御無効
 constexpr int16_t POSITION_TARGET_DISABLE = -1;
@@ -88,27 +89,39 @@ constexpr int16_t POSITION_TARGET_DISABLE = -1;
 // ============================================================
 // GET HARD LIMIT
 // ============================================================
+constexpr int GET1_OPEN_LIMIT  = 1940;
+constexpr int GET1_CLOSE_LIMIT = 2310;
 
-constexpr int GET1_OPEN_LIMIT  = 2052;
-constexpr int GET1_CLOSE_LIMIT = 2522;
-
-constexpr int GET2_OPEN_LIMIT  = 2536;
-constexpr int GET2_CLOSE_LIMIT = 1982;
+constexpr int GET2_OPEN_LIMIT  = 2300;
+constexpr int GET2_CLOSE_LIMIT = 1901;
 
 // ============================================================
 // PID gain
 // ============================================================
+//
+// まずPのみで動作確認。
+// 出力単位はそのままPWM duty。
+//
+// 例:
+// error = 500
+// Kp = 0.5
+// -> 約250 duty
+//
+// ============================================================
 
+// GET1
 constexpr float GET1_KP = 1.0f;
-constexpr float GET1_KI = 0.2f;
+constexpr float GET1_KI = 0.8f;
 constexpr float GET1_KD = 0.0f;
 
-constexpr float GET2_KP = 1.0f;
-constexpr float GET2_KI = 0.2f;
+// GET2
+constexpr float GET2_KP = 0.8f;
+constexpr float GET2_KI = 0.8f;
 constexpr float GET2_KD = 0.0f;
 
+// LIFT
 constexpr float LIFT_KP = 0.5f;
-constexpr float LIFT_KI = 0.0f;
+constexpr float LIFT_KI = 0.5f;
 constexpr float LIFT_KD = 0.0f;
 
 // ============================================================
@@ -119,7 +132,6 @@ struct ControlState
 {
     int16_t get1_target;
     int16_t get2_target;
-
     int16_t lift_target;
 
     int16_t air_target;
@@ -136,7 +148,6 @@ struct ControlState
 ControlState state = {
     POSITION_TARGET_DISABLE,
     POSITION_TARGET_DISABLE,
-
     POSITION_TARGET_DISABLE,
 
     0,
@@ -226,6 +237,10 @@ bool isPotLimitBlocking(
 
 void setup()
 {
+    // ========================================================
+    // 起動直後のモータ出力を確実にOFF
+    // ========================================================
+
     pinMode(GET1_PWM_PIN, OUTPUT);
     pinMode(GET1_DIR_PIN, OUTPUT);
 
@@ -360,14 +375,20 @@ void setup()
     // PID
     // ========================================================
 
+    // 現在のwithoutPID版と同じ最大出力に制限
     get1_pid.setOutputLimits(
-        -PWM_DUTY_LIMIT,
-        PWM_DUTY_LIMIT
+        -GET_PID_OUTPUT_LIMIT,
+        GET_PID_OUTPUT_LIMIT
     );
 
     get2_pid.setOutputLimits(
-        -PWM_DUTY_LIMIT,
-        PWM_DUTY_LIMIT
+        -GET_PID_OUTPUT_LIMIT,
+        GET_PID_OUTPUT_LIMIT
+    );
+
+    lift_pid.setOutputLimits(
+        -LIFT_PID_OUTPUT_LIMIT,
+        LIFT_PID_OUTPUT_LIMIT
     );
 
     // ========================================================
@@ -440,6 +461,28 @@ void taskControl(void *arg)
 
     uint32_t last_print_ms = 0;
 
+    // ========================================================
+    // 到達ラッチ
+    // ========================================================
+
+    int16_t last_get1_target =
+        POSITION_TARGET_DISABLE;
+
+    int16_t last_get2_target =
+        POSITION_TARGET_DISABLE;
+
+    int16_t last_lift_target =
+        POSITION_TARGET_DISABLE;
+
+    bool get1_target_reached =
+        false;
+
+    bool get2_target_reached =
+        false;
+
+    bool lift_target_reached =
+        false;
+
     while (true)
     {
         // ====================================================
@@ -452,8 +495,7 @@ void taskControl(void *arg)
             &state_mux
         );
 
-        local =
-            state;
+        local = state;
 
         portEXIT_CRITICAL(
             &state_mux
@@ -495,6 +537,18 @@ void taskControl(void *arg)
         last_control_us =
             now_us;
 
+        // タスク停止等でdtが異常になった場合は
+        // 通常の10msとして扱う
+        if (dt < 0.001f ||
+            dt > 0.050f)
+        {
+            dt =
+                static_cast<float>(
+                    CONTROL_PERIOD_MS
+                ) /
+                1000.0f;
+        }
+
         uint32_t now_ms =
             millis();
 
@@ -530,19 +584,42 @@ void taskControl(void *arg)
         bool get1_target_invalid =
             false;
 
+        float get1_output =
+            0.0f;
+
+        // ----------------------------------------------------
+        // Target change
+        //
+        // -1も含めて変更を検出する。
+        // DISABLE -> 同じ以前のtarget
+        // となった場合にも確実に再アームされる。
+        // ----------------------------------------------------
+
+        if (local.get1_target !=
+            last_get1_target)
+        {
+            last_get1_target =
+                local.get1_target;
+
+            get1_target_reached =
+                false;
+
+            get1_pid.reset();
+        }
+
         if (local.system_stop ||
             get_timeout ||
-            local.get1_target <
-                0)
+            local.get1_target ==
+                POSITION_TARGET_DISABLE)
         {
             get1_pid.reset();
-
-            setMotorPWM(
-                GET1_PWM_CHANNEL,
-                GET1_DIR_PIN,
-                0,
-                GET1_MOTOR_SIGN
-            );
+            get1_output = 0.0f;
+        }
+        else if (get1_target_reached)
+        {
+            // 一度到達したら次のターゲット変更まで停止
+            get1_pid.reset();
+            get1_output = 0.0f;
         }
         else
         {
@@ -555,19 +632,13 @@ void taskControl(void *arg)
                     GET1_OPEN_LIMIT,
                     GET1_CLOSE_LIMIT))
             {
-                // TARGET自体がLIMIT外なら
-                // 一切動かさない
                 get1_target_invalid =
                     true;
 
                 get1_pid.reset();
 
-                setMotorPWM(
-                    GET1_PWM_CHANNEL,
-                    GET1_DIR_PIN,
-                    0,
-                    GET1_MOTOR_SIGN
-                );
+                get1_output =
+                    0.0f;
             }
             else
             {
@@ -582,14 +653,14 @@ void taskControl(void *arg)
                 if (abs(error) <=
                     GET_POSITION_TOLERANCE)
                 {
+                    // 一度到達したらラッチ
+                    get1_target_reached =
+                        true;
+
                     get1_pid.reset();
 
-                    setMotorPWM(
-                        GET1_PWM_CHANNEL,
-                        GET1_DIR_PIN,
-                        0,
-                        GET1_MOTOR_SIGN
-                    );
+                    get1_output =
+                        0.0f;
                 }
                 else
                 {
@@ -597,19 +668,29 @@ void taskControl(void *arg)
                     // PID
                     // ----------------------------------------
 
-                    float output =
+                    get1_output =
                         get1_pid.update(
-                            local.get1_target,
-                            get1_position,
+                            static_cast<float>(
+                                local.get1_target
+                            ),
+                            static_cast<float>(
+                                get1_position
+                            ),
                             dt
                         );
 
                     // ----------------------------------------
                     // HARD LIMIT
+                    //
+                    // PID outputの符号
+                    // + : ADC増加方向
+                    // - : ADC減少方向
+                    //
+                    // motor_signを掛ける前に判定する。
                     // ----------------------------------------
 
                     if (isPotLimitBlocking(
-                            output,
+                            get1_output,
                             get1_position,
                             GET1_OPEN_LIMIT,
                             GET1_CLOSE_LIMIT))
@@ -619,18 +700,19 @@ void taskControl(void *arg)
 
                         get1_pid.reset();
 
-                        output = 0;
+                        get1_output =
+                            0.0f;
                     }
-
-                    setMotorPWM(
-                        GET1_PWM_CHANNEL,
-                        GET1_DIR_PIN,
-                        output,
-                        GET1_MOTOR_SIGN
-                    );
                 }
             }
         }
+
+        setMotorPWM(
+            GET1_PWM_CHANNEL,
+            GET1_DIR_PIN,
+            get1_output,
+            GET1_MOTOR_SIGN
+        );
 
         // ====================================================
         // GET2
@@ -642,19 +724,38 @@ void taskControl(void *arg)
         bool get2_target_invalid =
             false;
 
+        float get2_output =
+            0.0f;
+
+        // ----------------------------------------------------
+        // Target change
+        // ----------------------------------------------------
+
+        if (local.get2_target !=
+            last_get2_target)
+        {
+            last_get2_target =
+                local.get2_target;
+
+            get2_target_reached =
+                false;
+
+            get2_pid.reset();
+        }
+
         if (local.system_stop ||
             get_timeout ||
-            local.get2_target <
-                0)
+            local.get2_target ==
+                POSITION_TARGET_DISABLE)
         {
             get2_pid.reset();
-
-            setMotorPWM(
-                GET2_PWM_CHANNEL,
-                GET2_DIR_PIN,
-                0,
-                GET2_MOTOR_SIGN
-            );
+            get2_output = 0.0f;
+        }
+        else if (get2_target_reached)
+        {
+            // GET1ではなくGET2自身のラッチを見る
+            get2_pid.reset();
+            get2_output = 0.0f;
         }
         else
         {
@@ -668,12 +769,8 @@ void taskControl(void *arg)
 
                 get2_pid.reset();
 
-                setMotorPWM(
-                    GET2_PWM_CHANNEL,
-                    GET2_DIR_PIN,
-                    0,
-                    GET2_MOTOR_SIGN
-                );
+                get2_output =
+                    0.0f;
             }
             else
             {
@@ -684,26 +781,37 @@ void taskControl(void *arg)
                 if (abs(error) <=
                     GET_POSITION_TOLERANCE)
                 {
+                    get2_target_reached =
+                        true;
+
                     get2_pid.reset();
 
-                    setMotorPWM(
-                        GET2_PWM_CHANNEL,
-                        GET2_DIR_PIN,
-                        0,
-                        GET2_MOTOR_SIGN
-                    );
+                    get2_output =
+                        0.0f;
                 }
                 else
                 {
-                    float output =
+                    // ----------------------------------------
+                    // PID
+                    // ----------------------------------------
+
+                    get2_output =
                         get2_pid.update(
-                            local.get2_target,
-                            get2_position,
+                            static_cast<float>(
+                                local.get2_target
+                            ),
+                            static_cast<float>(
+                                get2_position
+                            ),
                             dt
                         );
 
+                    // ----------------------------------------
+                    // HARD LIMIT
+                    // ----------------------------------------
+
                     if (isPotLimitBlocking(
-                            output,
+                            get2_output,
                             get2_position,
                             GET2_OPEN_LIMIT,
                             GET2_CLOSE_LIMIT))
@@ -713,36 +821,60 @@ void taskControl(void *arg)
 
                         get2_pid.reset();
 
-                        output = 0;
+                        get2_output =
+                            0.0f;
                     }
-
-                    setMotorPWM(
-                        GET2_PWM_CHANNEL,
-                        GET2_DIR_PIN,
-                        output,
-                        GET2_MOTOR_SIGN
-                    );
                 }
             }
         }
+
+        setMotorPWM(
+            GET2_PWM_CHANNEL,
+            GET2_DIR_PIN,
+            get2_output,
+            GET2_MOTOR_SIGN
+        );
 
         // ====================================================
         // LIFT
         // ====================================================
 
+        float lift_output =
+            0.0f;
+
+        // ----------------------------------------------------
+        // Target change
+        // ----------------------------------------------------
+
+        if (local.lift_target !=
+            last_lift_target)
+        {
+            last_lift_target =
+                local.lift_target;
+
+            lift_target_reached =
+                false;
+
+            lift_pid.reset();
+        }
+
         if (local.system_stop ||
             lift_timeout ||
-            local.lift_target <
-                0)
+            local.lift_target ==
+                POSITION_TARGET_DISABLE)
         {
             lift_pid.reset();
 
-            setMotorPWM(
-                LIFT_PWM_CHANNEL,
-                LIFT_DIR_PIN,
-                0,
-                LIFT_MOTOR_SIGN
-            );
+            lift_output =
+                0.0f;
+        }
+        else if (lift_target_reached)
+        {
+            // 一度到達したら次の目標値が来るまで停止
+            lift_pid.reset();
+
+            lift_output =
+                0.0f;
         }
         else
         {
@@ -753,32 +885,40 @@ void taskControl(void *arg)
             if (abs(error) <=
                 LIFT_POSITION_TOLERANCE)
             {
+                // 目標範囲に一度入った時点でラッチ
+                lift_target_reached =
+                    true;
+
                 lift_pid.reset();
 
-                setMotorPWM(
-                    LIFT_PWM_CHANNEL,
-                    LIFT_DIR_PIN,
-                    0,
-                    LIFT_MOTOR_SIGN
-                );
+                lift_output =
+                    0.0f;
             }
             else
             {
-                float output =
+                // --------------------------------------------
+                // PID
+                // --------------------------------------------
+
+                lift_output =
                     lift_pid.update(
-                        local.lift_target,
-                        lift_position,
+                        static_cast<float>(
+                            local.lift_target
+                        ),
+                        static_cast<float>(
+                            lift_position
+                        ),
                         dt
                     );
-
-                setMotorPWM(
-                    LIFT_PWM_CHANNEL,
-                    LIFT_DIR_PIN,
-                    output,
-                    LIFT_MOTOR_SIGN
-                );
             }
         }
+
+        setMotorPWM(
+            LIFT_PWM_CHANNEL,
+            LIFT_DIR_PIN,
+            lift_output,
+            LIFT_MOTOR_SIGN
+        );
 
         // ====================================================
         // AIR
@@ -787,9 +927,9 @@ void taskControl(void *arg)
         if (local.system_stop ||
             air_timeout)
         {
-            // 通信断では閉
+            // 通信断では開
             setAirCylinder(
-                false
+                true
             );
         }
         else
@@ -811,35 +951,44 @@ void taskControl(void *arg)
                 now_ms;
 
             Serial.printf(
-                "GET1 T:%4d P:%4d LIM:%d INV:%d | "
-                "GET2 T:%4d P:%4d LIM:%d INV:%d | "
-                "LIFT T:%4d P:%4d | "
+                "GET1 T:%4d P:%4d OUT:%7.1f R:%d LIM:%d INV:%d | "
+                "GET2 T:%4d P:%4d OUT:%7.1f R:%d LIM:%d INV:%d | "
+                "LIFT T:%4d P:%4d OUT:%7.1f R:%d | "
                 "AIR:%d | "
-                "TO G:%d L:%d A:%d\n",
+                "TO G:%d L:%d A:%d | "
+                "dt:%.4f\n",
 
                 local.get1_target,
                 get1_position,
+                get1_output,
+                get1_target_reached,
                 get1_limit_blocked,
                 get1_target_invalid,
 
                 local.get2_target,
                 get2_position,
+                get2_output,
+                get2_target_reached,
                 get2_limit_blocked,
                 get2_target_invalid,
 
                 local.lift_target,
                 lift_position,
+                lift_output,
+                lift_target_reached,
 
                 local.air_target,
 
                 get_timeout,
                 lift_timeout,
-                air_timeout
+                air_timeout,
+
+                dt
             );
         }
 
         // ====================================================
-        // 10ms
+        // 10 ms
         // ====================================================
 
         vTaskDelayUntil(
@@ -1036,7 +1185,6 @@ bool isTargetInsidePotLimits(
     int close_limit
 )
 {
-    // -1ならリミット機能自体を無効化
     if (!arePotLimitsEnabled(
             open_limit,
             close_limit))
@@ -1078,11 +1226,7 @@ bool isPotLimitBlocking(
         return false;
     }
 
-    // OPEN/CLOSEのどちらでADCが大きくなるかは
-    // 問わない。
-    //
-    // 小さい側と大きい側を自動取得する。
-
+    // OPEN/CLOSEのどちらでADCが大きくなるかは問わない
     int lower_limit =
         min(
             open_limit,
@@ -1095,12 +1239,9 @@ bool isPotLimitBlocking(
             close_limit
         );
 
-    // --------------------------------------------------------
-    // PID output > 0
-    //
+    // output > 0
+    // target > current
     // ADC値を増加させる方向
-    // --------------------------------------------------------
-
     if (output > 0.0f &&
         current_position >=
             upper_limit)
@@ -1108,12 +1249,9 @@ bool isPotLimitBlocking(
         return true;
     }
 
-    // --------------------------------------------------------
-    // PID output < 0
-    //
+    // output < 0
+    // target < current
     // ADC値を減少させる方向
-    // --------------------------------------------------------
-
     if (output < 0.0f &&
         current_position <=
             lower_limit)
@@ -1141,17 +1279,23 @@ void setMotorPWM(
     // --------------------------------------------------------
 
     output *=
-        motor_sign;
+        static_cast<float>(
+            motor_sign
+        );
 
     // --------------------------------------------------------
-    // PID output limit
+    // Absolute hardware output limit
     // --------------------------------------------------------
 
     output =
         constrain(
             output,
-            -PID_OUTPUT_MAX,
-            PID_OUTPUT_MAX
+            -static_cast<float>(
+                PWM_DUTY_LIMIT
+            ),
+            static_cast<float>(
+                PWM_DUTY_LIMIT
+            )
         );
 
     // --------------------------------------------------------
@@ -1177,26 +1321,14 @@ void setMotorPWM(
     }
 
     // --------------------------------------------------------
-    // PID -> PWM duty
+    // PWM
     // --------------------------------------------------------
-
-    // int duty =
-    //     static_cast<int>(
-    //         output /
-    //         PID_OUTPUT_MAX *
-    //         PWM_DUTY_LIMIT
-    //     );
-
-    // duty =
-    //     constrain(
-    //         duty,
-    //         0,
-    //         PWM_DUTY_LIMIT
-    //     );
 
     int duty =
         constrain(
-            static_cast<int>(output),
+            static_cast<int>(
+                output
+            ),
             0,
             PWM_DUTY_LIMIT
         );

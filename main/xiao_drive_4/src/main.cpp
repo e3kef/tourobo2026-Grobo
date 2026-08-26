@@ -24,14 +24,16 @@ constexpr int ENCODER_B = 6;
 constexpr int PWM_PIN = 8;
 constexpr int DIR_PIN = 20;
 
-// PWM
+// PWM     
 constexpr int PWM_CHANNEL = 0;
 constexpr int PWM_FREQ = 20000;
 constexpr int PWM_RESOLUTION = 10;
 
 // 10bit PWM: 0～1023
-// 24Vで12Vモータを使うため約50%に制限→解除
-constexpr int PWM_DUTY_LIMIT = 1023;
+// 1023 -> 24V
+constexpr float PWM_OUTPUT_RATIO = 1.0f;   // 0.0~1.0
+constexpr float PWM_DUTY_LIMIT = 1023;
+constexpr int PWM_DUTY_MAX = int(PWM_OUTPUT_RATIO * PWM_DUTY_LIMIT);
 
 // Control
 constexpr uint32_t CAN_TIMEOUT_MS = 100;
@@ -46,9 +48,9 @@ constexpr float PID_OUTPUT_MAX = 1000.0f;
 // =====================
 
 // 仮値
-constexpr float KP = 2.0f;
-constexpr float KI = 0.0f;
-constexpr float KD = 0.0f;
+constexpr float KP = 4.0f;
+constexpr float KI = 8.0f;
+constexpr float KD = 0.001f;
 
 // =====================
 // Shared variables
@@ -79,7 +81,7 @@ void taskControl(void *arg);
 
 void receiveCAN();
 
-void setMotorPWM(float pwm);
+int setMotorPWM(float pwm);
 
 // =====================
 // Setup
@@ -227,15 +229,6 @@ void taskControl(void *arg)
         portEXIT_CRITICAL(&state_mux);
 
         // ---------------------
-        // Encoder
-        // ---------------------
-
-        // 停止中でも必ず10msごとに読む
-        // Encoder_getRPM()内部でカウントを0へ戻すため
-        float current_rpm =
-            Encoder_getRPM();
-
-        // ---------------------
         // dt
         // ---------------------
 
@@ -246,6 +239,15 @@ void taskControl(void *arg)
             / 1000000.0f;
 
         last_control_us = now_us;
+
+        // ---------------------
+        // Encoder
+        // ---------------------
+
+        // 停止中でも必ず10msごとに読む
+        // Encoder_getRPM()内部でカウントを0へ戻すため
+        float current_rpm =
+            Encoder_getRPM(dt);
 
         // ---------------------
         // Safety
@@ -259,12 +261,9 @@ void taskControl(void *arg)
             (millis() - target_time_local
              > CAN_TIMEOUT_MS);
 
-        if (no_target ||
-            timeout ||
-            stop_local)
+        if (no_target || timeout || stop_local || target_local == 0)
         {
             drive_pid.reset();
-
             setMotorPWM(0);
         }
         else
@@ -295,22 +294,28 @@ void taskControl(void *arg)
             // PWM
             // ---------------------
 
-            setMotorPWM(output);
+            int output_duty = setMotorPWM(output);
 
             // ---------------------
             // Debug
             // ---------------------
 
-            /*
-            Serial.printf(
-                "target:%d targetRPM:%.2f rpm:%.2f out:%.2f dt:%.4f\n",
-                target_local,
-                target_rpm,
-                current_rpm,
-                output,
-                dt
-            );
-            */
+            static uint32_t last_debug_ms = 0;
+            uint32_t now_ms = millis();
+
+            if (now_ms - last_debug_ms >= 100)
+            {
+                last_debug_ms = now_ms;
+
+                Serial.printf(
+                    "target=%.1f, current=%.1f, dt=%.4f, pid=%.1f, duty=%d\n",
+                    target_rpm,
+                    current_rpm,
+                    dt,
+                    output,
+                    output_duty
+                );
+            }
         }
 
         // ---------------------
@@ -417,7 +422,7 @@ void receiveCAN()
 // Motor
 // =====================
 
-void setMotorPWM(float pwm)
+int setMotorPWM(float pwm)
 {
     // PID output limit
     if (pwm > PID_OUTPUT_MAX)
@@ -458,12 +463,12 @@ void setMotorPWM(float pwm)
         static_cast<int>(
             pwm
             / PID_OUTPUT_MAX
-            * PWM_DUTY_LIMIT
+            * PWM_DUTY_MAX
         );
 
-    if (duty > PWM_DUTY_LIMIT)
+    if (duty > PWM_DUTY_MAX)
     {
-        duty = PWM_DUTY_LIMIT;
+        duty = PWM_DUTY_MAX;
     }
 
     ledcWrite(
@@ -471,7 +476,7 @@ void setMotorPWM(float pwm)
         duty
     );
 
-    Serial.println(duty);
+    return duty;
 }
 
 

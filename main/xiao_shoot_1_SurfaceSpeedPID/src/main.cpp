@@ -49,8 +49,6 @@ constexpr float SURFACE_SPEED_PER_RPM =
 // =====================
 // PID gain
 // =====================
-
-// 仮値
 constexpr float KP = 0.1f;
 constexpr float KI = 3.0f;
 constexpr float KD = 0.0010f;
@@ -143,7 +141,7 @@ void setup()
     // ---------------------
 
     shoot_pid.setOutputLimits(
-        -PID_OUTPUT_MAX,
+        0.0f,
         PID_OUTPUT_MAX
     );
 

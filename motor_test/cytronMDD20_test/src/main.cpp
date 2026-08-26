@@ -2,11 +2,11 @@
 
 #include "encoder.h"
 
-constexpr int ENC_A = D5;
-constexpr int ENC_B = D4;
+constexpr int ENC_A = 7;
+constexpr int ENC_B = 6;
 
-constexpr int PWM_PIN = 20;
-constexpr int DIR_PIN = 8;
+constexpr int PWM_PIN = 8;
+constexpr int DIR_PIN = 20;
 
 constexpr int PWM_CHANNEL = 0;
 
@@ -15,7 +15,9 @@ constexpr uint8_t PWM_RESOLUTION = 10;
 
 // 10bit: 0～1023
 // 50% duty
-constexpr uint16_t PWM_DUTY = 767;
+constexpr uint16_t PWM_DUTY = 1023;
+
+uint32_t last_control_us = 0;
 
 void setup()
 {
@@ -50,7 +52,19 @@ void loop()
 {
     static TickType_t last_wake_time = xTaskGetTickCount();
 
-    float rpm = Encoder_getRPM();
+    // ---------------------
+    // dt
+    // ---------------------
+
+    uint32_t now_us = micros();
+
+    float dt =
+        (now_us - last_control_us)
+        / 1000000.0f;
+
+    last_control_us = now_us;
+
+    float rpm = Encoder_getRPM(dt);
 
     Serial.print("RPM: ");
     Serial.println(rpm);
