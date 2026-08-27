@@ -80,7 +80,6 @@ constexpr uint32_t CAN_TIMEOUT_MS = 100;
 constexpr int ADC_AVG_COUNT = 4;
 
 // 目標位置±この範囲で停止
-constexpr int GET_POSITION_TOLERANCE = 3;
 constexpr int LIFT_POSITION_TOLERANCE = 3;
 
 // -1 = 制御無効
@@ -90,10 +89,10 @@ constexpr int16_t POSITION_TARGET_DISABLE = -1;
 // GET HARD LIMIT
 // ============================================================
 constexpr int GET1_OPEN_LIMIT  = 1940;
-constexpr int GET1_CLOSE_LIMIT = 2310;
+constexpr int GET1_CLOSE_LIMIT = 2450;
 
 constexpr int GET2_OPEN_LIMIT  = 2300;
-constexpr int GET2_CLOSE_LIMIT = 1901;
+constexpr int GET2_CLOSE_LIMIT = 1728;
 
 // ============================================================
 // PID gain
@@ -110,13 +109,13 @@ constexpr int GET2_CLOSE_LIMIT = 1901;
 // ============================================================
 
 // GET1
-constexpr float GET1_KP = 1.0f;
-constexpr float GET1_KI = 0.8f;
+constexpr float GET1_KP = 1.2f;
+constexpr float GET1_KI = 1.0f;
 constexpr float GET1_KD = 0.0f;
 
 // GET2
-constexpr float GET2_KP = 0.8f;
-constexpr float GET2_KI = 0.8f;
+constexpr float GET2_KP = 1.1f;
+constexpr float GET2_KI = 1.0f;
 constexpr float GET2_KD = 0.0f;
 
 // LIFT
@@ -646,24 +645,6 @@ void taskControl(void *arg)
                     local.get1_target -
                     get1_position;
 
-                // --------------------------------------------
-                // Position tolerance
-                // --------------------------------------------
-
-                if (abs(error) <=
-                    GET_POSITION_TOLERANCE)
-                {
-                    // 一度到達したらラッチ
-                    get1_target_reached =
-                        true;
-
-                    get1_pid.reset();
-
-                    get1_output =
-                        0.0f;
-                }
-                else
-                {
                     // ----------------------------------------
                     // PID
                     // ----------------------------------------
@@ -703,7 +684,6 @@ void taskControl(void *arg)
                         get1_output =
                             0.0f;
                     }
-                }
             }
         }
 
@@ -778,52 +758,38 @@ void taskControl(void *arg)
                     local.get2_target -
                     get2_position;
 
-                if (abs(error) <=
-                    GET_POSITION_TOLERANCE)
+                // ----------------------------------------
+                // PID
+                // ----------------------------------------
+
+                get2_output =
+                    get2_pid.update(
+                        static_cast<float>(
+                            local.get2_target
+                        ),
+                        static_cast<float>(
+                            get2_position
+                        ),
+                        dt
+                    );
+
+                // ----------------------------------------
+                // HARD LIMIT
+                // ----------------------------------------
+
+                if (isPotLimitBlocking(
+                        get2_output,
+                        get2_position,
+                        GET2_OPEN_LIMIT,
+                        GET2_CLOSE_LIMIT))
                 {
-                    get2_target_reached =
+                    get2_limit_blocked =
                         true;
 
                     get2_pid.reset();
 
                     get2_output =
                         0.0f;
-                }
-                else
-                {
-                    // ----------------------------------------
-                    // PID
-                    // ----------------------------------------
-
-                    get2_output =
-                        get2_pid.update(
-                            static_cast<float>(
-                                local.get2_target
-                            ),
-                            static_cast<float>(
-                                get2_position
-                            ),
-                            dt
-                        );
-
-                    // ----------------------------------------
-                    // HARD LIMIT
-                    // ----------------------------------------
-
-                    if (isPotLimitBlocking(
-                            get2_output,
-                            get2_position,
-                            GET2_OPEN_LIMIT,
-                            GET2_CLOSE_LIMIT))
-                    {
-                        get2_limit_blocked =
-                            true;
-
-                        get2_pid.reset();
-
-                        get2_output =
-                            0.0f;
-                    }
                 }
             }
         }

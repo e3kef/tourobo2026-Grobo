@@ -85,19 +85,19 @@ constexpr int SWITCH3_DOWN_THRESHOLD =
 constexpr int16_t POSITION_TARGET_DISABLE = -1;
 
 // GET1
-constexpr int16_t GET1_OPEN_TARGET   = 2040;
-constexpr int16_t GET1_MIDDLE_TARGET = 2218;
-constexpr int16_t GET1_CLOSE_TARGET  = 2294;
+constexpr int16_t GET1_OPEN_TARGET   = 2024;
+constexpr int16_t GET1_MIDDLE_TARGET = 2280;
+constexpr int16_t GET1_CLOSE_TARGET  = 2384;
 
 // GET2
-constexpr int16_t GET2_OPEN_TARGET   = 2190;
-constexpr int16_t GET2_MIDDLE_TARGET = 2022;
-constexpr int16_t GET2_CLOSE_TARGET  = 1936;
+constexpr int16_t GET2_OPEN_TARGET   = 2200;
+constexpr int16_t GET2_MIDDLE_TARGET = 1915;
+constexpr int16_t GET2_CLOSE_TARGET  = 1828;
 
 // 昇降
 constexpr int16_t LIFT_GET_TARGET    = 1062;
 constexpr int16_t LIFT_PLATE_TARGET  = 1474;
-constexpr int16_t LIFT_GATE_TARGET   = 2672;
+constexpr int16_t LIFT_GATE_TARGET   = 2878;
 
 // air
 constexpr int16_t AIR_CLOSE = 0;
@@ -752,7 +752,7 @@ void taskControl(void *arg)
                 SWITCH3_UP_THRESHOLD)
             {
                 lift_target[0] =
-                    LIFT_GET_TARGET;
+                    LIFT_GATE_TARGET;
             }
 
             // CH11 中央
@@ -769,7 +769,7 @@ void taskControl(void *arg)
             else
             {
                 lift_target[0] =
-                    LIFT_GATE_TARGET;
+                    LIFT_GET_TARGET;
             }
         }
         else
