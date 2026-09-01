@@ -85,19 +85,19 @@ constexpr int SWITCH3_DOWN_THRESHOLD =
 constexpr int16_t POSITION_TARGET_DISABLE = -1;
 
 // GET1
-constexpr int16_t GET1_OPEN_TARGET   = 2024;
-constexpr int16_t GET1_MIDDLE_TARGET = 2280;
-constexpr int16_t GET1_CLOSE_TARGET  = 2384;
+constexpr int16_t GET1_OPEN_TARGET   = 1798;
+constexpr int16_t GET1_MIDDLE_TARGET = 2094;
+constexpr int16_t GET1_CLOSE_TARGET  = 2166;
 
 // GET2
-constexpr int16_t GET2_OPEN_TARGET   = 2200;
-constexpr int16_t GET2_MIDDLE_TARGET = 1915;
-constexpr int16_t GET2_CLOSE_TARGET  = 1828;
+constexpr int16_t GET2_OPEN_TARGET   = 2226;
+constexpr int16_t GET2_MIDDLE_TARGET = 1940;
+constexpr int16_t GET2_CLOSE_TARGET  = 1864;
 
 // 昇降
-constexpr int16_t LIFT_GET_TARGET    = 1062;
-constexpr int16_t LIFT_PLATE_TARGET  = 1474;
-constexpr int16_t LIFT_GATE_TARGET   = 2878;
+constexpr int16_t LIFT_GET_TARGET    = 908;
+constexpr int16_t LIFT_PLATE_TARGET  = 1464;
+constexpr int16_t LIFT_GATE_TARGET   = 2680;
 
 // air
 constexpr int16_t AIR_CLOSE = 0;
@@ -798,12 +798,12 @@ void taskControl(void *arg)
                 SBUS_MID)
             {
                 air_target[0] =
-                    AIR_OPEN;
+                    AIR_CLOSE;
             }
             else
             {
                 air_target[0] =
-                    AIR_CLOSE;
+                    AIR_OPEN;
             }
         }
         else

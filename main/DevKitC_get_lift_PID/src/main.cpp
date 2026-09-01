@@ -88,11 +88,11 @@ constexpr int16_t POSITION_TARGET_DISABLE = -1;
 // ============================================================
 // GET HARD LIMIT
 // ============================================================
-constexpr int GET1_OPEN_LIMIT  = 1940;
-constexpr int GET1_CLOSE_LIMIT = 2450;
+constexpr int GET1_OPEN_LIMIT  = 1700;
+constexpr int GET1_CLOSE_LIMIT = 2300;
 
-constexpr int GET2_OPEN_LIMIT  = 2300;
-constexpr int GET2_CLOSE_LIMIT = 1728;
+constexpr int GET2_OPEN_LIMIT  = 2350;
+constexpr int GET2_CLOSE_LIMIT = 1700;
 
 // ============================================================
 // PID gain
@@ -111,12 +111,12 @@ constexpr int GET2_CLOSE_LIMIT = 1728;
 // GET1
 constexpr float GET1_KP = 1.2f;
 constexpr float GET1_KI = 1.0f;
-constexpr float GET1_KD = 0.0f;
+constexpr float GET1_KD = 0.003f;
 
 // GET2
 constexpr float GET2_KP = 1.1f;
 constexpr float GET2_KI = 1.0f;
-constexpr float GET2_KD = 0.0f;
+constexpr float GET2_KD = 0.003f;
 
 // LIFT
 constexpr float LIFT_KP = 0.5f;
